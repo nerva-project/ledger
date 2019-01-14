@@ -1,44 +1,17 @@
-# blue-app-monero
+# ledger-app-nerva
 
+Build from source:
+Install dependencies: pcsc-tools pcscd libpcsclite1 libudev-dev libusb-1.0-0-dev python-dev virtualenv
 
-Monero wallet application for Ledger Blue and Nano S
+You have to have to add the NanoS to /etc/libccid_Info.plist
+In <key>ifdVendorID</key> add the entry <string>0x2C97</string>
+In <key>ifdProductID</key> add the entry <string>0x0001</string>
+In <key>ifdFriendlyName</key> add the entry <string>Ledger Token</string>
+These 3 entries must be added at the end of each list.
 
+Create the following udev rules /etc/udev/rules.d/99-ledger.rules
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="2c97", ATTRS{idProduct}=="0000", MODE="0660", TAG+="uaccess", TAG+="udev-acl" GROUP="plugdev"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="2c97", ATTRS{idProduct}=="0001", MODE="0660", TAG+="uaccess", TAG+="udev-acl" GROUP="plugdev"
 
-# Revision 
-
-## v 0.12.4 / Beta 5
-
-Targeted Client: Monero 0.12.1
-
-- U2F support
-- Fix Windows detection problem
-- activate Mainnet 'Beta stage: USE AT YOUR OWN RISK'
-
-## v 0.12.3 / Beta 4
-
-Targeted Client: Monero 0.12.1
-
-- SDK 1.4.2.1 port
-
-## v 0.12.2 / Beta 3
-
-Targeted Client: Monero 0.12.1
-
-- Activate security command chain control
-
-
-## v 0.12.1 / Beta 2
-
-Targeted Client: Monero 0.12.1
-    
-- Add second PIN support
-- Remove key storage  in NVRAM, always recompute secret key at boot
-- Export secret viewkey, with agreement of user, to speed up tx scan
-- Clean-up RAM usage
-- Change some naming according to Monero client convention
-
-## Beta 1
-
-Targeted Client: Monero 0.12.0
-
-- Initial Beta.
+get docker
+run ./devenv init to create the build image and install the ledger loader

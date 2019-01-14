@@ -1,0 +1,56 @@
+#!/bin/bash
+dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+function init()
+{
+    docker build -t ledger-dev -f ${dir}/devenv.Dockerfile .
+    cd ${dir}/external/loader
+    virtualenv ledger
+    source ledger/bin/activate
+    pip install ledgerblue
+}
+
+function build()
+{
+    docker run -v ${dir}:/code ledger-dev:latest
+}
+
+function clean()
+{
+    docker run -v ${dir}:/code ledger-dev:latest "make clean"
+}
+
+# Ledger target id's for loader commands
+# 0x31100002 on Nano S (until firmware 1.3.1, included)
+# 0x31100003 on Nano S (after firmware 1.3.1)
+# 0x31000002 on Blue (until firmware 2.0, included)
+# 0x31010004 on Blue (after firmware 2.0)
+
+function listapps()
+{
+    cd ${dir}/external/loader
+    source ledger/bin/activate
+    python -m ledgerblue.listApps --targetId 0x31100003
+}
+
+function load()
+{
+    cd ${dir}/external/loader
+    source ledger/bin/activate
+
+    data_size="$(cat ${dir}/debug/app.map | grep _nvram_data_size | tr -s ' ' | cut -f2 -d ' ')"
+    icon_hex="$(python ${dir}/external/sdk/icon.py ${dir}/images/icon_monero.gif hexbitmaponly)"
+
+    python -m ledgerblue.loadApp --targetId 0x31100003 --fileName ${dir}/bin/app.hex \
+    --appName Nerva --appVersion 0.0.1 --dataSize ${data_size} --icon ${icon_hex} \
+    --appFlags 0x00 --path "44'/14336'" --curve secp256k1 --tlv --apdu
+}
+
+function delete()
+{
+    cd ${dir}/external/loader
+    source ledger/bin/activate
+    python -m ledgerblue.deleteApp --targetId 0x31100003 --appName Nerva
+}
+
+$1

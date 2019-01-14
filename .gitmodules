@@ -1,0 +1,6 @@
+[submodule "external/loader"]
+	path = external/loader
+	url = https://github.com/LedgerHQ/blue-loader-python
+[submodule "external/sdk"]
+	path = external/sdk
+	url = https://github.com/LedgerHQ/nanos-secure-sdk.git
