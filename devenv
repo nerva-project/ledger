@@ -43,7 +43,7 @@ function load()
 
     python -m ledgerblue.loadApp --targetId 0x31100003 --fileName ${dir}/bin/app.hex \
     --appName Nerva --appVersion 0.0.1 --dataSize ${data_size} --icon ${icon_hex} \
-    --appFlags 0x00 --path "44'/14336'" --curve secp256k1 --tlv --apdu
+    --appFlags 0x40 --path "44'/14336'" --curve secp256k1 --tlv --apdu
 }
 
 function delete()
