@@ -15,3 +15,5 @@ SUBSYSTEMS=="usb", ATTRS{idVendor}=="2c97", ATTRS{idProduct}=="0001", MODE="0660
 
 get docker
 run ./devenv init to create the build image and install the ledger loader
+run ./devenv build to build the wallet app
+rn ./devenv load to load it onto your ledger nano

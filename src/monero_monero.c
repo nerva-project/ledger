@@ -23,9 +23,6 @@ const unsigned char C_MAINNET_NETWORK_ID[] = {
 const unsigned char C_TESTNET_NETWORK_ID[] =  {
     0x13 ,0x22, 0xF0, 0x55 , 0x42, 0x18 , 0x40, 0x33, 0x16, 0x88, 0x01, 0x92, 0xAA, 0xBC, 0xFF, 0x13
 };
-const unsigned char C_STAGENET_NETWORK_ID[] =  {
-    0x14 ,0x31, 0xF1, 0x22 , 0x54, 0x86 , 0x36, 0xFF, 0xAB, 0x51, 0x00, 0x4F, 0x3C, 0x3D, 0xAA, 0x16
-};
 
 
 // Copyright (c) 2014-2017, The Monero Project
@@ -94,22 +91,11 @@ static void encode_block(const unsigned char* block, unsigned int  size,  char* 
 }
 
 int monero_base58_public_key(char* str_b58, unsigned char *view, unsigned char *spend, unsigned char is_subbadress) {
-    unsigned char data[72];
+    unsigned char data[80];
     unsigned int offset;
     unsigned int prefix;
 
-    //data[0] = N_monero_pstate->network_id;
-    switch(N_monero_pstate->network_id) {
-        case TESTNET:
-            prefix = is_subbadress ? TESTNET_CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX : TESTNET_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX;
-            break;
-        case STAGENET:
-            prefix = is_subbadress ? STAGENET_CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX : STAGENET_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX;
-            break;
-        case MAINNET:
-            prefix = is_subbadress ? MAINNET_CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX : MAINNET_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX;
-            break;
-    }
+    prefix = is_subbadress ? CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX : CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX;
     offset = monero_encode_varint(data, prefix);
     
     os_memmove(data+offset,spend,32);

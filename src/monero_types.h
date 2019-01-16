@@ -40,23 +40,13 @@
 #define MONERO_EXT_CHALLENGE_LENTH               254
 
 /* --- ... --- */
-#define MAINNET_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX             0x3800
-#define MAINNET_CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX  0x7081
-#define MAINNET_CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX          0x1080
-
-#define STAGENET_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX            0x3800
-#define STAGENET_CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX 0x7081
-#define STAGENET_CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX         0x1080
-
-#define TESTNET_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX             0x3800
-#define TESTNET_CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX  0x7081
-#define TESTNET_CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX          0x1080
+#define CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX             0x3800
+#define CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX  0x7081
+#define CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX          0x1080
 
 enum network_type {
     MAINNET = 0,
     TESTNET,
-    STAGENET,
-    FAKECHAIN
 };
 
 struct monero_nv_state_s {
@@ -164,10 +154,10 @@ struct monero_v_state_s {
   /* ------------------------------------------ */
   union {
     struct {
-      /* menu 0: 95-chars + "<monero: >"  + null */
+      /* menu 0: 97-chars + "<nerva: >"  + null */
       char            ux_menu[112];
-      // address to display: 95-chars + null
-      char            ux_address[96];
+      // address to display: 97-chars + null
+      char            ux_address[98];
       // xmr to display: max pow(2,64) unit, aka 20-chars + '0' + dot + null
       char            ux_amount[23];
     };

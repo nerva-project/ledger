@@ -341,27 +341,21 @@ void ui_menu_network_action(unsigned int value);
 const ux_menu_entry_t ui_menu_network[] = {
   {NULL,   NULL,                   0,        NULL, "It will reset", "the application!", 0, 0},
   {NULL,   ui_menu_main_display,   0,                                      &C_badge_back, "Abort",         NULL,          61, 40},
-  {NULL,   ui_menu_network_action, TESTNET,  NULL, "Test Network ",  NULL,          0, 0},
-  {NULL,   ui_menu_network_action, STAGENET, NULL, "Stage Network", NULL,          0, 0},
-  {NULL,   ui_menu_network_action, MAINNET,  NULL, "Main Network",  NULL,          0, 0},
+  {NULL,   ui_menu_network_action, TESTNET,  NULL, "Testnet ",  NULL,          0, 0},
+  {NULL,   ui_menu_network_action, MAINNET,  NULL, "Mainnet",  NULL,          0, 0},
   UX_MENU_END
 };
 
 const bagl_element_t* ui_menu_network_preprocessor(const ux_menu_entry_t* entry, bagl_element_t* element) {
   os_memset(G_monero_vstate.ux_menu, 0, sizeof(G_monero_vstate.ux_menu));  
   if ((entry == &ui_menu_network[2]) && (element->component.userid==0x20) && (N_monero_pstate->network_id == TESTNET)) {
-    os_memmove(G_monero_vstate.ux_menu, "Test Network  ", 14);
-    G_monero_vstate.ux_menu[13] = '+';
+    os_memmove(G_monero_vstate.ux_menu, "Testnet  ", 9);
+    G_monero_vstate.ux_menu[8] = '+';
     element->text = G_monero_vstate.ux_menu;
   }
-  if ((entry == &ui_menu_network[3]) && (element->component.userid==0x20) && (N_monero_pstate->network_id == STAGENET)) {
-    os_memmove(G_monero_vstate.ux_menu, "Stage Network ", 14);
-    G_monero_vstate.ux_menu[13] = '+';
-    element->text = G_monero_vstate.ux_menu;
-  }
-  if ((entry == &ui_menu_network[4]) && (element->component.userid==0x20) && (N_monero_pstate->network_id == MAINNET)) {
-    os_memmove(G_monero_vstate.ux_menu, "Main Network  ", 14);
-    G_monero_vstate.ux_menu[13] = '+';
+  if ((entry == &ui_menu_network[3]) && (element->component.userid==0x20) && (N_monero_pstate->network_id == MAINNET)) {
+    os_memmove(G_monero_vstate.ux_menu, "Mainnet  ", 9);
+    G_monero_vstate.ux_menu[8] = '+';
     element->text = G_monero_vstate.ux_menu;
   }
   return element;
@@ -416,7 +410,7 @@ void ui_menu_settings_display(unsigned int value) {
 
 const ux_menu_entry_t ui_menu_info[] = {
   {NULL,  NULL,                 -1, NULL,          "Nerva",                   NULL, 0, 0},
-  {NULL,  NULL,                 -1, NULL,          "(c) Ledger SAS",           NULL, 0, 0},
+  {NULL,  NULL,                 -1, NULL,          "Ledger Nano S",           NULL, 0, 0},
   {NULL,  NULL,                 -1, NULL,          "Spec  " XSTR(SPEC_VERSION),NULL, 0, 0},
   {NULL,  NULL,                 -1, NULL,          "App  " XSTR(MONERO_VERSION),  NULL, 0, 0},
   {NULL,  ui_menu_main_display,  3, &C_badge_back, "Back",                     NULL, 61, 40},
@@ -429,7 +423,7 @@ const ux_menu_entry_t ui_menu_info[] = {
 /* --------------------------------- MAIN UX --------------------------------- */
 
 const ux_menu_entry_t ui_menu_main[] = {
-  {NULL,                       NULL,  0, NULL,              "",            NULL, 0, 0},
+  {NULL,                       NULL,  0, NULL,             "NERVA Wallet", NULL, 0, 0},
   {ui_menu_settings,           NULL,  0, NULL,              "Settings",    NULL, 0, 0},
   {ui_menu_info,               NULL,  0, NULL,              "About",       NULL, 0, 0},
   {NULL,              os_sched_exit,  0, &C_icon_dashboard, "Quit app" ,   NULL, 50, 29},
@@ -437,20 +431,20 @@ const ux_menu_entry_t ui_menu_main[] = {
 };
 extern const  uint8_t N_USBD_CfgDesc[];
 const bagl_element_t* ui_menu_main_preprocessor(const ux_menu_entry_t* entry, bagl_element_t* element) {
-  if (entry == &ui_menu_main[0]) {
+  /*if (entry == &ui_menu_main[0]) {
     if(element->component.userid==0x20) {  
       os_memset(G_monero_vstate.ux_menu, 0, sizeof(G_monero_vstate.ux_menu));
-      os_memmove(G_monero_vstate.ux_menu, "< Nerva: ", 9);
-      monero_base58_public_key(G_monero_vstate.ux_menu+9, G_monero_vstate.A,G_monero_vstate.B, 0);
+      os_memmove(G_monero_vstate.ux_menu, "< NERVA >", 9);
+      monero_base58_public_key(G_monero_vstate.ux_menu, G_monero_vstate.A,G_monero_vstate.B, 0);
       G_monero_vstate.ux_menu[9+97+0] = ' ';
       G_monero_vstate.ux_menu[9+97+1] = '>';
       
       element->component.stroke = 10; // 1 second stop in each way
       element->component.icon_id = 48; // roundtrip speed in pixel/s
       element->text = G_monero_vstate.ux_menu;
-      UX_CALLBACK_SET_INTERVAL(bagl_label_roundtrip_duration_ms(element, 7));
+      UX_CALLBACK_SET_INTERVAL(bagl_label_roundtrip_duration_ms(element, 12));
     }
-  }
+  }*/
   return element;
 }
 void ui_menu_main_display(unsigned int value) {
