@@ -233,7 +233,11 @@ int monero_apdu_get_key() {
   //get private
   case 2:
     //view key
+#if defined(SKIP_EXPORT_VIEWKEY_CONFIRM)
+    ui_export_viewkey_button(BUTTON_EVT_RELEASED|BUTTON_RIGHT, 0);
+#else
     ui_export_viewkey_display();
+#endif
     return 0;
 
   #if DEBUG_HWDEVICE
