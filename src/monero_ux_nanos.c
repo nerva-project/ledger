@@ -31,16 +31,11 @@
 /* ---                        NanoS  UI layout                         --- */
 /* ----------------------------------------------------------------------- */
 
-const ux_menu_entry_t ui_menu_reset[] ;
-void ui_menu_reset_action(unsigned int value);
-
 const ux_menu_entry_t ui_menu_settings[] ;
 
 const ux_menu_entry_t ui_menu_main[];
 void ui_menu_main_display(unsigned int value) ;
 const bagl_element_t* ui_menu_main_preprocessor(const ux_menu_entry_t* entry, bagl_element_t* element);
-
-void ui_menu_settings_display(unsigned int value);
 
 /* ------------------------------- Helpers  UX ------------------------------- */
 void ui_CCID_reset(void) {
@@ -119,7 +114,7 @@ const ux_menu_entry_t ui_menu_words[] = {
   {NULL,  ui_menu_words_back,                  20,     NULL,  "",  "",    0, 0},
   {NULL,  ui_menu_words_back,                  22,     NULL,  "",  "",    0, 0},
   {NULL,  ui_menu_words_back,                  24,     NULL,  "",  "",    0, 0},
-  {NULL,  ui_menu_words_clear,                 -1,     NULL,  "CLEAR WORDS",  "(NO WIPE)",    0, 0},
+  {NULL,  ui_menu_words_clear,                 -1,     NULL,  "CLEAR",  "SEED",    0, 0},
   UX_MENU_END
 };
 
@@ -146,7 +141,7 @@ void ui_menu_words_clear(unsigned int value) {
   ui_menu_main_display(0);
 }
 void ui_menu_words_back(unsigned int value) {
-  ui_menu_settings_display(1);
+  ui_menu_main_display(0);
 }
 /* ----------------------------- USER DEST/AMOUNT VALIDATION ----------------------------- */
 void ui_menu_validation_action(unsigned int value);
@@ -224,7 +219,7 @@ const bagl_element_t* ui_menu_validation_preprocessor(const ux_menu_entry_t* ent
       os_memmove(G_monero_vstate.ux_menu, G_monero_vstate.ux_address+11*7, 11);      
     }
     if(element->component.userid==0x22) {     
-      os_memmove(G_monero_vstate.ux_menu, G_monero_vstate.ux_address+11*8, 7);
+      os_memmove(G_monero_vstate.ux_menu, G_monero_vstate.ux_address+11*8, 9);
     }
     element->text = G_monero_vstate.ux_menu;
   }
@@ -336,115 +331,16 @@ unsigned int ui_export_viewkey_button(unsigned int button_mask, unsigned int but
   return 0;
 }
 
-/* -------------------------------- NETWORK UX --------------------------------- */
-void ui_menu_network_action(unsigned int value);
-const ux_menu_entry_t ui_menu_network[] = {
-  {NULL,   NULL,                   0,        NULL, "It will reset", "the application!", 0, 0},
-  {NULL,   ui_menu_main_display,   0,                                      &C_badge_back, "Abort",         NULL,          61, 40},
-  {NULL,   ui_menu_network_action, TESTNET,  NULL, "Testnet ",  NULL,          0, 0},
-  {NULL,   ui_menu_network_action, MAINNET,  NULL, "Mainnet",  NULL,          0, 0},
-  UX_MENU_END
-};
-
-const bagl_element_t* ui_menu_network_preprocessor(const ux_menu_entry_t* entry, bagl_element_t* element) {
-  os_memset(G_monero_vstate.ux_menu, 0, sizeof(G_monero_vstate.ux_menu));  
-  if ((entry == &ui_menu_network[2]) && (element->component.userid==0x20) && (N_monero_pstate->network_id == TESTNET)) {
-    os_memmove(G_monero_vstate.ux_menu, "Testnet  ", 9);
-    G_monero_vstate.ux_menu[8] = '+';
-    element->text = G_monero_vstate.ux_menu;
-  }
-  if ((entry == &ui_menu_network[3]) && (element->component.userid==0x20) && (N_monero_pstate->network_id == MAINNET)) {
-    os_memmove(G_monero_vstate.ux_menu, "Mainnet  ", 9);
-    G_monero_vstate.ux_menu[8] = '+';
-    element->text = G_monero_vstate.ux_menu;
-  }
-  return element;
-}
-
-void ui_menu_network_action(unsigned int value) {
-  monero_install(value);
-  monero_init();
-  ui_menu_main_display(0);
-}
-
-void ui_menu_network_display(unsigned int value) {
-   UX_MENU_DISPLAY(value, ui_menu_network, ui_menu_network_preprocessor);
-}
-
-/* -------------------------------- RESET UX --------------------------------- */
-
-const ux_menu_entry_t ui_menu_reset[] = {
-  {NULL,   NULL,                 0, NULL,          "Really Reset ?", NULL, 0, 0},
-  {NULL,   ui_menu_main_display, 0, &C_badge_back, "No",         NULL, 61, 40},
-  {NULL,   ui_menu_reset_action, 0, NULL,          "Yes",           NULL, 0, 0},
-  UX_MENU_END
-};
-
-void ui_menu_reset_action(unsigned int value) {
-  unsigned char magic[4];
-  magic[0] = 0; magic[1] = 0; magic[2] = 0; magic[3] = 0;
-  monero_nvm_write(N_monero_pstate->magic, magic, 4);
-  monero_init();
-  ui_menu_main_display(0);
-}
-/* ------------------------------- SETTINGS UX ------------------------------- */
-
-const ux_menu_entry_t ui_menu_settings[] = {
-  {NULL,     ui_menu_network_display,     0, NULL,          "Change Network",  NULL, 0, 0},
-  {NULL,        ui_menu_words_display,    0, NULL,          "Show 25 words",   NULL, 0, 0},
-  {ui_menu_reset,               NULL,     0, NULL,          "Reset",           NULL, 0, 0},
-  {NULL,        ui_menu_main_display,     2, &C_badge_back, "Back",            NULL, 61, 40},
-  UX_MENU_END
-};
-
-
-void ui_menu_settings_display(unsigned int value) {
-   UX_MENU_DISPLAY(value, ui_menu_settings, NULL);
-}
-
-/* --------------------------------- INFO UX --------------------------------- */
-
-
-#define STR(x)  #x
-#define XSTR(x) STR(x)
-
-const ux_menu_entry_t ui_menu_info[] = {
-  {NULL,  NULL,                 -1, NULL,          "Nerva",                   NULL, 0, 0},
-  {NULL,  NULL,                 -1, NULL,          "Ledger Nano S",           NULL, 0, 0},
-  {NULL,  NULL,                 -1, NULL,          "Spec  " XSTR(SPEC_VERSION),NULL, 0, 0},
-  {NULL,  NULL,                 -1, NULL,          "App  " XSTR(MONERO_VERSION),  NULL, 0, 0},
-  {NULL,  ui_menu_main_display,  3, &C_badge_back, "Back",                     NULL, 61, 40},
-  UX_MENU_END
-};
-
-#undef STR
-#undef XSTR
-
 /* --------------------------------- MAIN UX --------------------------------- */
 
 const ux_menu_entry_t ui_menu_main[] = {
   {NULL,                       NULL,  0, NULL,             "NERVA Wallet", NULL, 0, 0},
-  {ui_menu_settings,           NULL,  0, NULL,              "Settings",    NULL, 0, 0},
-  {ui_menu_info,               NULL,  0, NULL,              "About",       NULL, 0, 0},
-  {NULL,              os_sched_exit,  0, &C_icon_dashboard, "Quit app" ,   NULL, 50, 29},
+  {NULL,        ui_menu_words_display,    2, NULL,          "Show Seed",   NULL, 0, 0},
+  {NULL,              os_sched_exit,  4, &C_icon_dashboard, "Quit app" ,   NULL, 50, 29},
   UX_MENU_END
 };
 extern const  uint8_t N_USBD_CfgDesc[];
 const bagl_element_t* ui_menu_main_preprocessor(const ux_menu_entry_t* entry, bagl_element_t* element) {
-  /*if (entry == &ui_menu_main[0]) {
-    if(element->component.userid==0x20) {  
-      os_memset(G_monero_vstate.ux_menu, 0, sizeof(G_monero_vstate.ux_menu));
-      os_memmove(G_monero_vstate.ux_menu, "< NERVA >", 9);
-      monero_base58_public_key(G_monero_vstate.ux_menu, G_monero_vstate.A,G_monero_vstate.B, 0);
-      G_monero_vstate.ux_menu[9+97+0] = ' ';
-      G_monero_vstate.ux_menu[9+97+1] = '>';
-      
-      element->component.stroke = 10; // 1 second stop in each way
-      element->component.icon_id = 48; // roundtrip speed in pixel/s
-      element->text = G_monero_vstate.ux_menu;
-      UX_CALLBACK_SET_INTERVAL(bagl_label_roundtrip_duration_ms(element, 12));
-    }
-  }*/
   return element;
 }
 void ui_menu_main_display(unsigned int value) {

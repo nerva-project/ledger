@@ -8,6 +8,16 @@ function init()
     virtualenv ledger
     source ledger/bin/activate
     pip install ledgerblue
+
+    
+}
+
+function init_tools()
+{
+    cd ${dir}/tools/python
+    virtualenv tools
+    source tools/bin/activate
+    pip3 install pycryptodomex ECPy ledgerblue
 }
 
 function build()
@@ -51,6 +61,13 @@ function delete()
     cd ${dir}/external/loader
     source ledger/bin/activate
     python -m ledgerblue.deleteApp --targetId 0x31100003 --appName Nerva
+}
+
+function genseed()
+{
+    cd ${dir}/tools/python/src
+    source ../tools/bin/activate
+    python3 -m ledger.monero.seedconv online
 }
 
 $1

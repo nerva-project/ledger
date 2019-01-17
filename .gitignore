@@ -2,3 +2,5 @@ bin
 dep
 debug
 obj
+tools/python/tools
+__pycache__

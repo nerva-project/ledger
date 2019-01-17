@@ -19,14 +19,6 @@
 #include "monero_api.h"
 #include "monero_vars.h"
 
-#if defined(IODUMMYCRYPT)
-  #warning IODUMMYCRYPT activated
-#endif
-#if defined(IONOCRYPT)
-  #warning IONOCRYPT activated
-#endif
-
-
 /*
  * io_buff: contains current message part
  * io_off: offset in current message part
@@ -204,7 +196,8 @@ int monero_io_fetch_decrypt(unsigned char* buffer, int len) {
     return 0;
   }
 
-  if (buffer) {
+  if (buffer)
+  {
 #if defined(IODUMMYCRYPT)
     for (int i = 0; i<len; i++) {
       buffer[i] = G_monero_vstate.io_buffer[G_monero_vstate.io_offset+i] ^ 0x55;
