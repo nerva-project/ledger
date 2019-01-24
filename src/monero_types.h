@@ -177,7 +177,7 @@ typedef struct  monero_v_state_s monero_v_state_t;
 #define IO_OFFSET_END                       (unsigned int)-1
 #define IO_OFFSET_MARK                      (unsigned int)-2
 
-#define ENCRYPTED_PAYMENT_ID_TAIL            0x8f
+#define ENCRYPTED_PAYMENT_ID_TAIL            0x8d
 
 /* ---  Errors  --- */
 #define ERROR(x)                            ((x)<<16)

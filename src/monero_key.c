@@ -311,7 +311,7 @@ int monero_apdu_verify_key() {
 /* ----------------------------------------------------------------------- */
 /* ---                                                                 --- */
 /* ----------------------------------------------------------------------- */
-#define CHACHA8_KEY_TAIL 0x8d
+#define CHACHA8_KEY_TAIL 0x8c
 int monero_apdu_get_chacha8_prekey(/*char  *prekey*/) {
   unsigned char abt[65];
   unsigned char pre[32];
