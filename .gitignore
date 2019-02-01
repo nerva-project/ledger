@@ -4,3 +4,5 @@ debug
 obj
 tools/python/tools
 __pycache__
+__init__.pyc
+

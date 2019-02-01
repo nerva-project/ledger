@@ -7,7 +7,7 @@ function init()
         cd ${dir}/external/loader
         virtualenv ledger
         source ledger/bin/activate
-        pip3 install pycryptodomex ECPy ledgerblue
+        pip install pycryptodomex ECPy ledgerblue
     else
         echo "Ledger virtualenv already created"
     fi
@@ -16,7 +16,7 @@ function init()
         cd ${dir}/tools/python
         virtualenv tools
         source tools/bin/activate
-        pip3 install pycryptodomex ECPy ledgerblue
+        pip install pycryptodomex ECPy ledgerblue
     else
         echo "Tools virtualenv already created"
     fi
@@ -44,7 +44,7 @@ function load()
     data_size="$(cat ${dir}/debug/app.map | grep _nvram_data_size | tr -s ' ' | cut -f2 -d ' ')"
     icon_hex="$(python ${dir}/external/sdk/icon.py ${dir}/images/icon_monero.gif hexbitmaponly)"
 
-    python3 -m ledgerblue.loadApp --targetId 0x31100003 --fileName ${dir}/bin/app.hex \
+    python -m ledgerblue.loadApp --targetId 0x31100003 --fileName ${dir}/bin/app.hex \
     --appName Nerva --appVersion 0.0.1 --dataSize ${data_size} --icon ${icon_hex} \
     --appFlags 0x40 --path "44'/14336'" --curve secp256k1 --tlv --apdu
 }
@@ -53,7 +53,7 @@ function delete()
 {
     cd ${dir}/external/loader
     source ledger/bin/activate
-    python3 -m ledgerblue.deleteApp --targetId 0x31100003 --appName Nerva
+    python -m ledgerblue.deleteApp --targetId 0x31100003 --appName Nerva
 }
 
 function genseed()
@@ -64,3 +64,4 @@ function genseed()
 }
 
 $1
+
