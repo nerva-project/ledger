@@ -16,7 +16,7 @@ function init()
         cd ${dir}/tools/python
         virtualenv tools
         source tools/bin/activate
-        pip install pycryptodomex ECPy ledgerblue
+        pip3 install pycryptodomex ECPy ledgerblue
     else
         echo "Tools virtualenv already created"
     fi
