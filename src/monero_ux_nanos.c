@@ -83,7 +83,7 @@ void ui_menu_fee_validation_action(unsigned int value) {
   if (value == ACCEPT) {
     sw = 0x9000;
   } else {
-   sw = SW_SECURITY_STATUS_NOT_SATISFIED;
+   sw = SW_REJECT_TX_FEE;// SW_SECURITY_STATUS_NOT_SATISFIED;
     monero_abort_tx();
   }
   monero_io_insert_u16(sw);  
@@ -236,7 +236,7 @@ void ui_menu_validation_action(unsigned int value) {
   if (value == ACCEPT) {
     sw = 0x9000;
   } else {
-   sw = SW_SECURITY_STATUS_NOT_SATISFIED;
+   sw = SW_REJECT_TX;// SW_SECURITY_STATUS_NOT_SATISFIED;
     monero_abort_tx();
   }
   monero_io_insert_u16(sw);  

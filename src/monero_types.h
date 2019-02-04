@@ -253,6 +253,9 @@ typedef struct  monero_v_state_s monero_v_state_t;
 
 #define SW_MORE_DATA_AVAILABLE               0x6310
 
+#define SW_REJECT_TX_FEE                     0x6400
+#define SW_REJECT_TX                         0x6410
+
 #define SW_WRONG_LENGTH                      0x6700
 
 #define SW_LOGICAL_CHANNEL_NOT_SUPPORTED     0x6881
