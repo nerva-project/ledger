@@ -155,9 +155,9 @@ struct monero_v_state_s {
   union {
     struct {
       /* menu 0: 97-chars + "<nerva: >"  + null */
-      char            ux_menu[112];
+      char            ux_menu[122];
       // address to display: 97-chars + null
-      char            ux_address[98];
+      char            ux_address[108];
       // xmr to display: max pow(2,64) unit, aka 20-chars + '0' + dot + null
       char            ux_amount[23];
     };
