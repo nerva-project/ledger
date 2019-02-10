@@ -4,7 +4,7 @@ source ${SCRIPT_DIR}/loader/bin/activate
 
 function genuinecheck()
 {
-	python -m ledgerblue.checkGenuine --targetId ${DEVICE_ID}
+	python3 -m ledgerblue.checkGenuine --targetId ${DEVICE_ID}
 }
 
 function seed()
