@@ -91,7 +91,7 @@ static void encode_block(const unsigned char* block, unsigned int  size,  char* 
 }
 
 int monero_base58_public_key(char* str_b58, unsigned char *view, unsigned char *spend, unsigned char is_subbadress) {
-    unsigned char data[80];
+    unsigned char data[72];
     unsigned int offset;
     unsigned int prefix;
 

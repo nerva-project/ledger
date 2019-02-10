@@ -1,0 +1,15 @@
+#!/bin/bash
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"/include/env
+source ${SCRIPT_DIR}/loader/bin/activate
+
+function genuinecheck()
+{
+	python -m ledgerblue.checkGenuine --targetId ${DEVICE_ID}
+}
+
+function seed()
+{
+    python3 -m tools.seedconv online
+}
+
+$1

@@ -38,16 +38,15 @@ void monero_init() {
     monero_install(MAINNET);
   }
 
+  G_monero_vstate.protocol = 0xff;
   //generate key protection
   monero_aes_generate(&G_monero_vstate.spk);
   //load key
   monero_init_private_key();
-  monero_ecmul_G(G_monero_vstate.A, G_monero_vstate.a);
-  monero_ecmul_G(G_monero_vstate.B, G_monero_vstate.b);
   //ux conf
   monero_init_ux();
   // Let's go!
-  G_monero_vstate.state = 42;
+  G_monero_vstate.state = STATE_IDLE;
 }
 
 /* ----------------------------------------------------------------------- */

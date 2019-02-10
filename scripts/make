@@ -1,0 +1,25 @@
+#!/bin/bash
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"/include/env
+source ${SCRIPT_DIR}/loader/bin/activate
+
+function clean()
+{
+    docker run -v ${ROOT_DIR}:/code ledger-dev:latest "make clean"
+    exit 0
+}
+
+function make()
+{
+    docker run -v ${ROOT_DIR}:/code ledger-dev:latest
+
+    data_size="$(cat ${ROOT_DIR}/debug/app.map | grep _nvram_data_size | tr -s ' ' | cut -f2 -d ' ')"
+    icon_hex="$(python3 -m tools.icon ${ROOT_DIR}/images/icon_nerva.gif hexbitmaponly)"
+
+    echo "export APP_SIZE=${data_size}" > ${INCLUDE_DIR}/appinfo
+    echo "export ICON_HEX=${icon_hex}" >> ${INCLUDE_DIR}/appinfo
+    exit 0
+}
+
+$1
+
+make
