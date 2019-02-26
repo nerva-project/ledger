@@ -26,16 +26,15 @@
 #include "string.h"
 #include "glyphs.h"
 
+#include "monero_ux_nanos.h"
+
 
 /* ----------------------------------------------------------------------- */
 /* ---                        NanoS  UI layout                         --- */
 /* ----------------------------------------------------------------------- */
 
-const ux_menu_entry_t ui_menu_settings[] ;
-
 const ux_menu_entry_t ui_menu_main[];
 void ui_menu_main_display(unsigned int value) ;
-const bagl_element_t* ui_menu_main_preprocessor(const ux_menu_entry_t* entry, bagl_element_t* element);
 
 /* ------------------------------- Helpers  UX ------------------------------- */
 /*
@@ -115,7 +114,7 @@ const ux_menu_entry_t ui_menu_words[] = {
 };
 
 const bagl_element_t* ui_menu_words_preprocessor(const ux_menu_entry_t* entry, bagl_element_t* element) {
-  if ((entry->userid >= 0) && (entry->userid <25)) {
+  if ((entry->userid <25)) {
   
     if(element->component.userid==0x21) {      
       element->text = N_monero_pstate->words[entry->userid];
@@ -244,8 +243,6 @@ void ui_menu_validation_action(unsigned int value) {
 
 /* -------------------------------- EXPORT VIEW KEY UX --------------------------------- */
 unsigned int ui_export_viewkey_prepro(const  bagl_element_t* element);
-unsigned int ui_export_viewkey_button(unsigned int button_mask, unsigned int button_mask_counter);
-
 
 const bagl_element_t ui_export_viewkey[] = {
   // type             userid    x    y    w    h    str   rad  fill              fg        bg     font_id                   icon_id  
@@ -281,7 +278,7 @@ const bagl_element_t ui_export_viewkey[] = {
     
 };
 
-void ui_export_viewkey_display(unsigned int value) {
+void ui_export_viewkey_display() {
  UX_DISPLAY(ui_export_viewkey, (void*)ui_export_viewkey_prepro);   
 }
 
@@ -336,11 +333,8 @@ const ux_menu_entry_t ui_menu_main[] = {
   UX_MENU_END
 };
 extern const  uint8_t N_USBD_CfgDesc[];
-const bagl_element_t* ui_menu_main_preprocessor(const ux_menu_entry_t* entry, bagl_element_t* element) {
-  return element;
-}
 void ui_menu_main_display(unsigned int value) {
-   UX_MENU_DISPLAY(value, ui_menu_main, ui_menu_main_preprocessor);
+   UX_MENU_DISPLAY(value, ui_menu_main, NULL);
 }
 
 void ui_init(void) {

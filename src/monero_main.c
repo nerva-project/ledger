@@ -22,7 +22,6 @@
 #include "monero_vars.h"
 
 #include "monero_ux_nanos.h"
-//#include "monero_ux_blue.h"
 
 #include "os_io_seproxyhal.h"
 #include "string.h"
@@ -70,8 +69,8 @@ void monero_main(void) {
 
 
 unsigned char io_event(unsigned char channel) {
-  int s_before ;
-  int s_after  ;
+  unsigned int s_before ;
+  unsigned int s_after ;
 
   s_before =  os_global_pin_is_validated();
   
@@ -122,7 +121,7 @@ unsigned char io_event(unsigned char channel) {
       //monero_wipe_private_key();
     }
   }
-  
+
   // command has been processed, DO NOT reset the current APDU transport
   return 1;
 }

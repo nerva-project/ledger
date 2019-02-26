@@ -3,9 +3,6 @@ export INCLUDE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export SCRIPT_DIR="$(cd "$(dirname "${INCLUDE_DIR}")" && pwd)"
 export ROOT_DIR="$(cd "$(dirname "${SCRIPT_DIR}")" && pwd)"
 
-source ${INCLUDE_DIR}/cert
-export SCP_PRIVKEY=${SEC_KEY}
-
 # Device ID Table
 #+-----------------+------------+
 #|    FirmWare     | Target ID  |

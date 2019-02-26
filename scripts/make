@@ -4,6 +4,7 @@ source ${SCRIPT_DIR}/loader/bin/activate
 
 function clean()
 {
+    rm -f ${INCLUDE_DIR}/appinfo
     docker run -v ${ROOT_DIR}:/code ledger-dev:latest "make clean"
     exit 0
 }

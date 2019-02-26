@@ -21,7 +21,7 @@
 
 
 
-void check_potocol()  {
+void check_protocol()  {
   /* the first command enforce the protocol version until application quits */
   switch(G_monero_vstate.io_protocol_version) {
    case 0x00: /* the first one: PCSC epoch */
@@ -102,7 +102,7 @@ int monero_dispatch() {
 
   int sw;
   
-  check_potocol();
+  check_protocol();
   check_ins_access();
 
   if (G_monero_vstate.io_ins == INS_RESET) {
