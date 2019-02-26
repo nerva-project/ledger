@@ -214,7 +214,7 @@ int monero_apdu_put_key() {
 }
 
 #ifndef SKIP_EXPORT_VIEWKEY_CONFIRM
-//#define SKIP_EXPORT_VIEWKEY_CONFIRM
+#define SKIP_EXPORT_VIEWKEY_CONFIRM
 #endif
 
 /* ----------------------------------------------------------------------- */
@@ -238,11 +238,11 @@ int monero_apdu_get_key() {
   //get private
   case 2:
     //view key
-//#if defined(SKIP_EXPORT_VIEWKEY_CONFIRM)
-//    ui_export_viewkey_button(BUTTON_EVT_RELEASED|BUTTON_RIGHT, 0);
-//#else
+#if defined(SKIP_EXPORT_VIEWKEY_CONFIRM)
+    ui_export_viewkey_button(BUTTON_EVT_RELEASED|BUTTON_RIGHT, 0);
+#else
     ui_export_viewkey_display();
-//#endif
+#endif
     return 0;
 
   #if DEBUG_HWDEVICE
