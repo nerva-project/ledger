@@ -157,9 +157,9 @@ struct monero_v_state_s {
   union {
     struct {
       /* menu 0: 97-chars + "<nerva: >"  + null */
-      char            ux_menu[122];
+      char            ux_menu[112];
       // address to display: 97-chars + null
-      char            ux_address[108];
+      char            ux_address[98];
       // xmr to display: max pow(2,64) unit, aka 20-chars + '0' + dot + null
       char            ux_amount[23];
     };
@@ -222,6 +222,7 @@ typedef struct  monero_v_state_s monero_v_state_t;
 #define INS_SET_SIGNATURE_MODE              0x72
 #define INS_GET_ADDITIONAL_KEY              0x74
 #define INS_STEALTH                         0x76
+#define INS_GEN_COMMITMENT_MASK             0x77
 #define INS_BLIND                           0x78
 #define INS_UNBLIND                         0x7A
 #define INS_GEN_TXOUT_KEYS                  0x7B
@@ -259,8 +260,7 @@ typedef struct  monero_v_state_s monero_v_state_t;
 
 #define SW_MORE_DATA_AVAILABLE               0x6310
 
-#define SW_REJECT_TX_FEE                     0x6400
-#define SW_REJECT_TX                         0x6410
+#define IO_SW_DENY                           0x6982
 
 #define SW_WRONG_LENGTH                      0x6700
 

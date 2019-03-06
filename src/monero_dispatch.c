@@ -86,6 +86,7 @@ void check_ins_access() {
   case INS_BLIND:
   case INS_VALIDATE:
   case INS_MLSAG:
+  case INS_GEN_COMMITMENT_MASK:
     if ((os_global_pin_is_validated() != PIN_VERIFIED) ||
         (G_monero_vstate.tx_in_progress != 1)) {
       break;
@@ -105,13 +106,13 @@ int monero_dispatch() {
   check_protocol();
   check_ins_access();
 
+  G_monero_vstate.options = monero_io_fetch_u8();
+
   if (G_monero_vstate.io_ins == INS_RESET) {
     monero_init();
+    monero_io_discard(0);
     return 0x9000;
   }
-
-  
-  G_monero_vstate.options = monero_io_fetch_u8();
 
   sw = 0x6F01;
 
@@ -210,6 +211,11 @@ int monero_dispatch() {
     /*--- TX OUT KEYS --- */
   case INS_GEN_TXOUT_KEYS:
     sw = monero_apu_generate_txout_keys();
+    break;
+
+    /*--- COMMITMENT MASK --- */
+  case INS_GEN_COMMITMENT_MASK:
+    sw = monero_apdu_gen_commitment_mask();
     break;
 
     /* --- BLIND --- */

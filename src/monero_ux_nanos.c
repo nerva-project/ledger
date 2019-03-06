@@ -78,7 +78,7 @@ void ui_menu_fee_validation_action(unsigned int value) {
   if (value == ACCEPT) {
     sw = 0x9000;
   } else {
-   sw = SW_REJECT_TX_FEE;// SW_SECURITY_STATUS_NOT_SATISFIED;
+   sw = IO_SW_DENY;
     monero_abort_tx();
   }
   monero_io_insert_u16(sw);  
@@ -114,7 +114,7 @@ const ux_menu_entry_t ui_menu_words[] = {
 };
 
 const bagl_element_t* ui_menu_words_preprocessor(const ux_menu_entry_t* entry, bagl_element_t* element) {
-  if ((entry->userid <25)) {
+  if ((entry->userid >= 0) && (entry->userid <25)) {
   
     if(element->component.userid==0x21) {      
       element->text = N_monero_pstate->words[entry->userid];
@@ -231,7 +231,7 @@ void ui_menu_validation_action(unsigned int value) {
   if (value == ACCEPT) {
     sw = 0x9000;
   } else {
-   sw = SW_REJECT_TX;// SW_SECURITY_STATUS_NOT_SATISFIED;
+   sw = IO_SW_DENY;
     monero_abort_tx();
   }
   monero_io_insert_u16(sw);  
@@ -327,12 +327,12 @@ unsigned int ui_export_viewkey_button(unsigned int button_mask, unsigned int but
 /* --------------------------------- MAIN UX --------------------------------- */
 
 const ux_menu_entry_t ui_menu_main[] = {
-  {NULL,                       NULL,  0, NULL,             "NERVA Wallet", NULL, 0, 0},
-  {NULL,        ui_menu_words_display,    2, NULL,          "Show Seed",   NULL, 0, 0},
-  {NULL,              os_sched_exit,  4, &C_icon_dashboard, "Quit app" ,   NULL, 50, 29},
+  {NULL,                       NULL,  0, NULL,              "NERVA Wallet", NULL,  0, 0},
+  {NULL,      ui_menu_words_display,  2, NULL,              "Show Seed",    NULL,  0, 0},
+  {NULL,              os_sched_exit,  4, &C_icon_dashboard, "Quit app" ,    NULL, 50, 29},
   UX_MENU_END
 };
-extern const  uint8_t N_USBD_CfgDesc[];
+
 void ui_menu_main_display(unsigned int value) {
    UX_MENU_DISPLAY(value, ui_menu_main, NULL);
 }
