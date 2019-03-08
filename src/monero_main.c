@@ -70,8 +70,8 @@ void monero_main(void) {
 
 
 unsigned char io_event(unsigned char channel) {
-  int s_before ;
-  int s_after  ;
+  unsigned int s_before ;
+  unsigned int s_after ;
 
   s_before =  os_global_pin_is_validated();
   

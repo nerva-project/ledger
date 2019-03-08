@@ -3,9 +3,11 @@ dep
 debug
 obj
 scripts/loader
-scripts/include/cert
+scripts/include/key
 scripts/include/appinfo
 __pycache__
 __init__.pyc
 src/glyphs.*
 
+scripts/dbg/usbtool/*.o
+scripts/dbg/usbtool/usbtool

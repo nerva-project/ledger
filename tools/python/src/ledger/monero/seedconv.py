@@ -55,7 +55,7 @@ Licensed under the Apache License, Version 2.0
 
 def printdbg(*args):
     if DEBUG:
-    print(*args)
+        print(*args)
     return
 
 def error(msg):

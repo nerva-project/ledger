@@ -680,17 +680,6 @@ void monero_ecsub(unsigned char *W, unsigned char *P, unsigned char *Q) {
 /* ----------------------------------------------------------------------- */
 /* ---                                                                 --- */
 /* ----------------------------------------------------------------------- */
-/*
-    static key ecdhHash(const key &k)
-    {
-        char data[38];
-        rct::key hash;
-        memcpy(data, "amount", 6);
-        memcpy(data + 6, &k, sizeof(k));
-        cn_fast_hash(hash, data, sizeof(data));
-        return hash;
-    }
-*/
 void monero_ecdhHash(unsigned char *x, unsigned char *k) {
   unsigned char data[38];
   os_memmove(data, "amount", 6);
@@ -701,17 +690,7 @@ void monero_ecdhHash(unsigned char *x, unsigned char *k) {
 /* ----------------------------------------------------------------------- */
 /* ---                                                                 --- */
 /* ----------------------------------------------------------------------- */
-/*
-    key genCommitmentMask(const key &sk)
-    {
-        char data[15 + sizeof(key)];
-        memcpy(data, "commitment_mask", 15);
-        memcpy(data + 15, &sk, sizeof(sk));
-        key scalar;
-        hash_to_scalar(scalar, data, sizeof(data));
-        return scalar;
-    }
-*/
+
 void monero_genCommitmentMask(unsigned char *c,  unsigned char *sk) {
     unsigned char data[15 + 32];
     os_memmove(data, "commitment_mask", 15);
