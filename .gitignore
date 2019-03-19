@@ -11,3 +11,4 @@ src/glyphs.*
 
 scripts/dbg/usbtool/*.o
 scripts/dbg/usbtool/usbtool
+packages/loader
