@@ -23,7 +23,7 @@ Before proceeding with the installation, we should ensure the app.hex file is of
 
 This will output the following something similar to the text below
 
-```
+```text
 gpg: assuming signed data in './bin/app.hex'
 gpg: Signature made Sat 09 Mar 2019 00:48:22 AEDT
 gpg:                using RSA key 37CBC31FEAE5A569DD0C59D8E78478ACBBF8DA1A
@@ -37,7 +37,7 @@ author is indeed "Nerva Project"
 
 This will output the following something similar to the text below
 
-```
+```text
 gpg: key E78478ACBBF8DA1A: "Nerva Project <nerva@getnerva.org>" not changed
 gpg: Total number processed: 1
 gpg:              unchanged: 1
