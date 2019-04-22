@@ -30,6 +30,7 @@ void monero_reset_tx() {
     monero_sha256_commitment_init();
     monero_sha256_outkeys_init();
     G_monero_vstate.tx_in_progress = 0;
+    G_monero_vstate.tx_output_cnt = 0;
  }
 /*
  * HD wallet not yet supported : account is assumed to be zero

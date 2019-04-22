@@ -8,7 +8,7 @@ scripts/include/appinfo
 __pycache__
 __init__.pyc
 src/glyphs.*
-
+.vscode/ipch
 scripts/dbg/usbtool/*.o
 scripts/dbg/usbtool/usbtool
 packages/loader

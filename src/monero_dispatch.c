@@ -21,14 +21,14 @@
 
 
 
-void check_protocol()  {
+void check_potocol()  {
   /* the first command enforce the protocol version until application quits */
   switch(G_monero_vstate.io_protocol_version) {
    case 0x00: /* the first one: PCSC epoch */
    case 0x02: /* protocol V2 */
     if (G_monero_vstate.protocol == 0xff) {
       G_monero_vstate.protocol = G_monero_vstate.io_protocol_version;
-    } 
+    }
     if (G_monero_vstate.protocol == G_monero_vstate.io_protocol_version) {
         break;
     }
@@ -102,8 +102,8 @@ void check_ins_access() {
 int monero_dispatch() {
 
   int sw;
-  
-  check_protocol();
+
+  check_potocol();
   check_ins_access();
 
   G_monero_vstate.options = monero_io_fetch_u8();
@@ -111,6 +111,9 @@ int monero_dispatch() {
   if (G_monero_vstate.io_ins == INS_RESET) {
     monero_init();
     monero_io_discard(0);
+    monero_io_insert_u8(MONERO_VERSION_MAJOR);
+    monero_io_insert_u8(MONERO_VERSION_MINOR);
+    monero_io_insert_u8(MONERO_VERSION_MICRO);
     return 0x9000;
   }
 
