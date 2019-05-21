@@ -21,14 +21,14 @@
 
 
 
-void check_protocol()  {
+void check_potocol()  {
   /* the first command enforce the protocol version until application quits */
   switch(G_monero_vstate.io_protocol_version) {
    case 0x00: /* the first one: PCSC epoch */
    case 0x02: /* protocol V2 */
     if (G_monero_vstate.protocol == 0xff) {
       G_monero_vstate.protocol = G_monero_vstate.io_protocol_version;
-    } 
+    }
     if (G_monero_vstate.protocol == G_monero_vstate.io_protocol_version) {
         break;
     }
@@ -102,16 +102,15 @@ void check_ins_access() {
 int monero_dispatch() {
 
   int sw;
-  
-  check_protocol();
+
+  check_potocol();
   check_ins_access();
 
   G_monero_vstate.options = monero_io_fetch_u8();
 
   if (G_monero_vstate.io_ins == INS_RESET) {
-    monero_init();
-    monero_io_discard(0);
-    return 0x9000;
+    sw = monero_apdu_reset();
+    return sw;
   }
 
   sw = 0x6F01;
@@ -206,6 +205,11 @@ int monero_dispatch() {
     break;
   case INS_GET_SUBADDRESS_SECRET_KEY:
     sw = monero_apdu_get_subaddress_secret_key();
+    break;
+
+      /* --- PROOF --- */
+  case INS_GET_TX_PROOF:
+    sw = monero_apdu_get_tx_proof();
     break;
 
     /*--- TX OUT KEYS --- */

@@ -35,6 +35,7 @@
 
 const ux_menu_entry_t ui_menu_main[];
 void ui_menu_main_display(unsigned int value) ;
+const bagl_element_t* ui_menu_main_preprocessor(const ux_menu_entry_t* entry, bagl_element_t* element);
 
 /* ------------------------------- Helpers  UX ------------------------------- */
 /*
@@ -78,7 +79,7 @@ void ui_menu_fee_validation_action(unsigned int value) {
   if (value == ACCEPT) {
     sw = 0x9000;
   } else {
-   sw = IO_SW_DENY;
+   sw = SW_SECURITY_STATUS_NOT_SATISFIED;
     monero_abort_tx();
   }
   monero_io_insert_u16(sw);  
@@ -231,7 +232,7 @@ void ui_menu_validation_action(unsigned int value) {
   if (value == ACCEPT) {
     sw = 0x9000;
   } else {
-   sw = IO_SW_DENY;
+   sw = SW_SECURITY_STATUS_NOT_SATISFIED;
     monero_abort_tx();
   }
   monero_io_insert_u16(sw);  
@@ -324,17 +325,122 @@ unsigned int ui_export_viewkey_button(unsigned int button_mask, unsigned int but
   return 0;
 }
 
-/* --------------------------------- MAIN UX --------------------------------- */
+/* --------------------------------- INFO UX --------------------------------- */
 
-const ux_menu_entry_t ui_menu_main[] = {
-  {NULL,                       NULL,  0, NULL,              "NERVA Wallet", NULL,  0, 0},
-  {NULL,      ui_menu_words_display,  2, NULL,              "Show Seed",    NULL,  0, 0},
-  {NULL,              os_sched_exit,  4, &C_icon_dashboard, "Quit app" ,    NULL, 50, 29},
+
+#define STR(x)  #x
+#define XSTR(x) STR(x)
+
+const ux_menu_entry_t ui_menu_info[] = {
+  {NULL,  NULL,                 -1, NULL,          "Nerva",                   NULL, 0, 0},
+  {NULL,  NULL,                 -1, NULL,          "Min Version",  NULL, 0, 0},
+  {NULL,  NULL,                 -1, NULL,          "0."XSTR(MONERO_VERSION),  NULL, 0, 0},
+  {NULL,  ui_menu_main_display,  3, &C_badge_back, "Back",                     NULL, 61, 40},
   UX_MENU_END
 };
 
+#undef STR
+#undef XSTR
+
+/* ---------------------------- PUBLIC ADDRESS UX ---------------------------- */
+
+void ui_menu_pubaddr_action(unsigned int value);
+
+const ux_menu_entry_t ui_menu_pubaddr[] = {
+  {NULL,  NULL,                  3,          NULL,  "XNV",  "?addr.1?",   0, 0},
+  {NULL,  NULL,                  4,          NULL,  "?addr.2?",     "?addr.2?",   0, 0},
+  {NULL,  NULL,                  5,          NULL,  "?addr.3?",     "?addr.3?",   0, 0},
+  {NULL,  NULL,                  6,          NULL,  "?addr.4?",     "?addr.4?",   0, 0},
+  {NULL,  NULL,                  7,          NULL,  "?addr.5?",     "?addr.5?",   0, 0},
+  {NULL,  ui_menu_main_display,  0, &C_badge_back, "Back",                     NULL, 61, 40},
+  UX_MENU_END
+};
+
+const bagl_element_t* ui_menu_pubaddr_preprocessor(const ux_menu_entry_t* entry, bagl_element_t* element) {
+
+   /* --- address --- */
+  if (entry == &ui_menu_pubaddr[0]) {
+    if(element->component.userid==0x22) {
+      os_memset(G_monero_vstate.ux_menu, 0, sizeof(G_monero_vstate.ux_menu)) ;
+      os_memmove(G_monero_vstate.ux_menu, G_monero_vstate.ux_address+11*0, 11);
+      element->text = G_monero_vstate.ux_menu;
+    }
+  }
+  if (entry == &ui_menu_pubaddr[1]) {
+    os_memset(G_monero_vstate.ux_menu, 0, sizeof(G_monero_vstate.ux_menu)) ;
+    if(element->component.userid==0x21) {
+      os_memmove(G_monero_vstate.ux_menu, G_monero_vstate.ux_address+11*1, 11);
+    }
+    if(element->component.userid==0x22) {
+      os_memmove(G_monero_vstate.ux_menu, G_monero_vstate.ux_address+11*2, 11);
+    }
+    element->text = G_monero_vstate.ux_menu;
+  }
+  if (entry == &ui_menu_pubaddr[2]) {
+    os_memset(G_monero_vstate.ux_menu, 0, sizeof(G_monero_vstate.ux_menu)) ;
+    if(element->component.userid==0x21) {
+      os_memmove(G_monero_vstate.ux_menu, G_monero_vstate.ux_address+11*3, 11);
+    }
+    if(element->component.userid==0x22) {
+      os_memmove(G_monero_vstate.ux_menu, G_monero_vstate.ux_address+11*4, 11);
+    }
+    element->text = G_monero_vstate.ux_menu;
+  }
+  if (entry == &ui_menu_pubaddr[3]) {
+    os_memset(G_monero_vstate.ux_menu, 0, sizeof(G_monero_vstate.ux_menu)) ;
+    if(element->component.userid==0x21) {
+      os_memmove(G_monero_vstate.ux_menu, G_monero_vstate.ux_address+11*5, 11);
+    }
+    if(element->component.userid==0x22) {
+      os_memmove(G_monero_vstate.ux_menu, G_monero_vstate.ux_address+11*6, 11);
+    }
+    element->text = G_monero_vstate.ux_menu;
+  }
+  if (entry == &ui_menu_pubaddr[4]) {
+    os_memset(G_monero_vstate.ux_menu, 0, sizeof(G_monero_vstate.ux_menu)) ;
+    if(element->component.userid==0x21) {
+      os_memmove(G_monero_vstate.ux_menu, G_monero_vstate.ux_address+11*7, 11);
+    }
+    if(element->component.userid==0x22) {
+      os_memmove(G_monero_vstate.ux_menu, G_monero_vstate.ux_address+11*8, 9);
+    }
+    element->text = G_monero_vstate.ux_menu;
+  }
+
+  return element;
+}
+
+void ui_menu_pubaddr_display(unsigned int value) {
+   monero_base58_public_key(G_monero_vstate.ux_address, G_monero_vstate.A,G_monero_vstate.B, 0);
+   UX_MENU_DISPLAY(value, ui_menu_pubaddr, ui_menu_pubaddr_preprocessor);
+}
+
+/* --------------------------------- MAIN UX --------------------------------- */
+
+const ux_menu_entry_t ui_menu_main[] = {
+  {NULL,      	 ui_menu_pubaddr_display,  0, NULL,              "NERVA Wallet", NULL,  0, 0},
+  {NULL,      	 ui_menu_words_display,  2, NULL,              "Show Seed",    NULL,  0, 0},
+  {ui_menu_info, NULL,  0, NULL,              "About",       NULL, 0, 0},
+  {NULL,         os_sched_exit,  4, &C_icon_dashboard, "Quit app" ,    NULL, 50, 29},
+  UX_MENU_END
+};
+
+const bagl_element_t* ui_menu_main_preprocessor(const ux_menu_entry_t* entry, bagl_element_t* element) {
+  if (entry == &ui_menu_main[0]) {
+    if(element->component.userid==0x22) {
+      os_memset(G_monero_vstate.ux_menu, 0, sizeof(G_monero_vstate.ux_menu));
+      monero_base58_public_key(G_monero_vstate.ux_menu, G_monero_vstate.A,G_monero_vstate.B, 0);
+      os_memset(G_monero_vstate.ux_menu+5,'.',2);
+      os_memmove(G_monero_vstate.ux_menu+7, G_monero_vstate.ux_menu+97-5,5);
+      G_monero_vstate.ux_menu[12] = 0;
+      element->text = G_monero_vstate.ux_menu;
+    }
+  }
+  return element;
+}
+
 void ui_menu_main_display(unsigned int value) {
-   UX_MENU_DISPLAY(value, ui_menu_main, NULL);
+   UX_MENU_DISPLAY(value, ui_menu_main, ui_menu_main_preprocessor);
 }
 
 void ui_init(void) {
