@@ -7,16 +7,20 @@ if [ -f "${INCLUDE_DIR}/key" ]; then
     echo "Using saved key"
 fi
 
+if [ ! "$(docker images --format '{{.Repository}}:{{.Tag}}' | grep nerva/ledger)" ]; then
+	docker pull nerva/ledger
+fi
+
 function clean()
 {
     rm -f ${INCLUDE_DIR}/appinfo
-    docker run -v ${ROOT_DIR}:/code ledger-dev:latest "make clean"
+    docker run --rm -i --privileged -v ${ROOT_DIR}:/code --user 1000:1000 --name nerva_ledger -t nerva/ledger:latest "make clean"
     exit 0
 }
 
 function make()
 {
-    docker run -v ${ROOT_DIR}:/code ledger-dev:latest
+    docker run --rm -i --privileged -v ${ROOT_DIR}:/code --user 1000:1000 --name nerva_ledger -t nerva/ledger:latest "make"
 
     data_size="$(cat ${ROOT_DIR}/debug/app.map | grep _nvram_data_size | tr -s ' ' | cut -f2 -d ' ')"
     icon_hex="$(python3 -m tools.icon ${ROOT_DIR}/images/icon_nerva.gif hexbitmaponly)"

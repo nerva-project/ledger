@@ -21,14 +21,12 @@ function install()
         echo "Ledger virtualenv already created"
     fi
 
-    docker build --build-arg SDK_VER=${SDK_VER} -t ledger-dev -f ${INCLUDE_DIR}/build.Dockerfile ${ROOT_DIR}
 	exit 0
 }
 
 function uninstall()
 {
     rm -rf "${SCRIPT_DIR}/loader"
-    docker rmi -f ledger-dev:latest
 	exit 0
 }
 

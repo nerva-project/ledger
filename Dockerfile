@@ -22,5 +22,3 @@ RUN apt-get update && \
     cd $BOLOS_SDK && git checkout tags/nanos-1552
 
 COPY ./scripts/include/init /usr/local/bin/init
-
-ENTRYPOINT ["init"]
