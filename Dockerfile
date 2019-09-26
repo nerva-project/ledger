@@ -5,7 +5,6 @@ WORKDIR /code
 
 ENV BOLOS_ENV /opt/bolos-env
 ENV BOLOS_SDK /opt/bolos-sdk
-ARG SDK_VER
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends libc6-dev-i386 python python-pil curl ca-certificates bzip2 xz-utils git make && \
@@ -20,7 +19,7 @@ RUN apt-get update && \
     mv $BOLOS_ENV/clang+llvm-4.0.0-x86_64-linux-gnu-ubuntu-16.04 $BOLOS_ENV/clang-arm-fropi && \
     rm /tmp/clang.tar.xz && \
     git clone https://github.com/LedgerHQ/nanos-secure-sdk.git $BOLOS_SDK && \
-    cd $BOLOS_SDK && git checkout tags/nanos-$SDK_VER
+    cd $BOLOS_SDK && git checkout tags/nanos-1552
 
 COPY ./scripts/include/init /usr/local/bin/init
 
