@@ -30,7 +30,7 @@ APPNAME = "Nerva"
 ifeq ($(TARGET_NAME),TARGET_BLUE)
 ICONNAME = images/icon_nerva_blue.gif
 else ifeq ($(TARGET_NAME),TARGET_NANOX)
-ICONNAME = images/icon_monero_nanox.gif
+ICONNAME = images/icon_nerva_nanox.gif
 else
 ICONNAME = images/icon_nerva.gif
 endif

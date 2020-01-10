@@ -647,8 +647,8 @@ UX_STEP_CB(
   pbb,
   ui_menu_pubaddr_display(0),
   {
-    &C_icon_monero,
-    "XMR",
+    &C_icon_nerva,
+    "XNV",
     G_monero_vstate.ux_wallet_public_short_address
   });
 

@@ -7,7 +7,7 @@ ENV BOLOS_ENV /opt/bolos-env
 ENV BOLOS_SDK /opt/bolos-sdk
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends libc6-dev-i386 python python-pil curl ca-certificates bzip2 xz-utils git make && \
+    apt-get install -y --no-install-recommends libc6-dev-i386 python python3 python-pil python3-pil curl ca-certificates bzip2 xz-utils git make && \
     mkdir $BOLOS_ENV $BOLOS_SDK && \
     curl -L https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q1-update/+download/gcc-arm-none-eabi-5_3-2016q1-20160330-linux.tar.bz2 --output /tmp/gcc.tar.bz2 && \
     echo "217850b0f3297014e8e52010aa52da0a83a073ddec4dc49b1a747458c5d6a223  /tmp/gcc.tar.bz2" | sha256sum -c && \

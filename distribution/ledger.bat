@@ -1,10 +1,10 @@
 @ECHO off
 SET dir=%~dp0
 
-SET SDK_VER=1552
+SET SDK_VER=160
 SET DEVICE_ID=0x31100004
 SET APP_NAME=Nerva
-SET APP_VER=1.5.8
+SET APP_VER=1.7.0
 SET APP_SIZE=0x00000280
 SET ICON_HEX=0100000000ffffff00a815a815fc3f07e004304718e408a72db4e5102718e20c2007e0fc3fa815a815
 
@@ -33,7 +33,7 @@ GOTO exit
 
     python -m ledgerblue.loadApp --targetId %DEVICE_ID% --fileName %dir%\bin\app.hex ^
     --appName %APP_NAME% --appVersion %APP_VER% --dataSize %APP_SIZE% --icon %ICON_HEX% ^
-    --appFlags 0x40 --path "44'/14336'" --curve secp256k1 --tlv
+    --appFlags 0x240 --path "44'/14336'" --curve secp256k1 --tlv
 
 GOTO exit
 

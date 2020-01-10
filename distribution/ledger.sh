@@ -1,10 +1,10 @@
 #!/bin/bash
 dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-export SDK_VER=1552
+export SDK_VER=160
 export DEVICE_ID=0x31100004
 export APP_NAME=Nerva
-export APP_VER=1.5.8
+export APP_VER=1.7.0
 export APP_SIZE=0x00000280
 export ICON_HEX=0100000000ffffff00a815a815fc3f07e004304718e408a72db4e5102718e20c2007e0fc3fa815a815
 
@@ -42,7 +42,7 @@ function install()
 {
     python3 -m ledgerblue.loadApp --targetId ${DEVICE_ID} --fileName ${dir}/bin/app.hex \
     --appName ${APP_NAME} --appVersion ${APP_VER} --dataSize ${APP_SIZE} --icon ${ICON_HEX} \
-    --appFlags 0x40 --path "44'/14336'" --curve secp256k1 --tlv
+    --appFlags 0x240 --path "44'/14336'" --curve secp256k1 --tlv
 
     exit 0
 }
