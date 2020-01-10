@@ -18,10 +18,5 @@
 #ifndef MONERO_UX_NANOS_H
 #define MONERO_UX_NANOS_H
 
-void ui_init(void);
-void ui_main_display(unsigned int value);
-void monero_ux_user_validation();  
 
-unsigned int ui_export_viewkey_button(unsigned int button_mask, unsigned int button_mask_counter);
-void ui_export_viewkey_display();
 #endif

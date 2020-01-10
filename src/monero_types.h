@@ -21,6 +21,7 @@
 #if CX_APILEVEL == 8
 #define PIN_VERIFIED (!0)
 #elif CX_APILEVEL == 9 ||  CX_APILEVEL == 10
+
 #define PIN_VERIFIED BOLOS_UX_OK
 #else
 #error CX_APILEVEL not  supported
@@ -45,8 +46,10 @@
 #define CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX          0x1080
 
 enum network_type {
-    MAINNET = 0,
-    TESTNET,
+  #ifndef USE_TESTNET
+  MAINNET = 0,
+  #endif
+  TESTNET = 1
 };
 
 struct monero_nv_state_s {
@@ -62,11 +65,11 @@ struct monero_nv_state_s {
   unsigned char key_mode;
 
 
+  /* spend key */
+  unsigned char b[32];
   /* view key */
   unsigned char a[32];
 
-  /* spend key */
-  unsigned char b[32];
 
   /*words*/
   #define WORDS_MAX_LENGTH 20
@@ -84,8 +87,14 @@ enum device_mode {
   TRANSACTION_PARSE
 };
 
+#define EXPORT_VIEW_KEY  0xC001BEEF
+
+#define DISP_MAIN        0x51
+#define DISP_SUB         0x52
+#define DISP_INTEGRATED  0x53
+
 struct monero_v_state_s {
-  unsigned char   state; 
+  unsigned char   state;
   unsigned char   protocol;
 
   /* ------------------------------------------ */
@@ -113,26 +122,26 @@ struct monero_v_state_s {
 
 
   unsigned int   sig_mode;
+  unsigned int   export_view_key;
 
   /* ------------------------------------------ */
   /* ---               Crypo                --- */
   /* ------------------------------------------ */
-
+  unsigned char b[32];
   unsigned char a[32];
   unsigned char A[32];
-  unsigned char b[32];
   unsigned char B[32];
 
   /* SPK */
   cx_aes_key_t spk;
+  unsigned char hmac_key[32];
 
   /* Tx state machine */
   struct {
   unsigned char key_set:1;
    unsigned int tx_in_progress: 1;
    unsigned int tx_state: 4;
-   
-  }; 
+  };
   unsigned int   tx_output_cnt;
 
   /* Tx key */
@@ -155,21 +164,36 @@ struct monero_v_state_s {
   /* ------------------------------------------ */
   /* ---               UI/UX                --- */
   /* ------------------------------------------ */
+
+  #ifdef UI_NANO_X
+  char            ux_wallet_public_address[160];
+  char            ux_wallet_public_short_address[5+2+5+1];
+  #endif
+
   union {
     struct {
-      /* menu 0: 97-chars + "<nerva: >"  + null */
+      /* menu 0: 95-chars + "<monero: >"  + null */
       char            ux_menu[112];
-      // address to display: 97-chars + null
+      // address to display: 95/106-chars + null
       char            ux_address[98];
       // xmr to display: max pow(2,64) unit, aka 20-chars + '0' + dot + null
       char            ux_amount[23];
-    };
-    struct {
-      char words[340];
+      // addr mode
+      unsigned char disp_addr_mode;
+      //M.m address
+      unsigned int disp_addr_M;
+      unsigned int disp_addr_m;
+      //payment id
+      char payment_id[16];
     };
     struct {
       unsigned char tmp[340];
     };
+    #ifdef UI_NANO_X
+    struct {
+      char ux_words[520];
+    };
+    #endif
   };
 };
 typedef struct  monero_v_state_s monero_v_state_t;
@@ -200,6 +224,7 @@ typedef struct  monero_v_state_s monero_v_state_t;
 #define INS_RESET                           0x02
 
 #define INS_GET_KEY                         0x20
+#define INS_DISPLAY_ADDRESS                 0x21
 #define INS_PUT_KEY                         0x22
 #define INS_GET_CHACHA8_PREKEY              0x24
 #define INS_VERIFY_KEY                      0x26
@@ -237,6 +262,8 @@ typedef struct  monero_v_state_s monero_v_state_t;
 #define INS_GET_TX_PROOF                    0xA0
 #define INS_GEN_SIGNATURE                   0xA2
 #define INS_GEN_RING_SIGNATURE              0xA4
+
+
 
 #define INS_GET_RESPONSE                    0xc0
 
@@ -280,6 +307,7 @@ typedef struct  monero_v_state_s monero_v_state_t;
 #define SW_SECURITY_COMMITMENT_CHAIN_CONTROL 0x6913
 #define SW_SECURITY_OUTKEYS_CHAIN_CONTROL    0x6914
 #define SW_SECURITY_MAXOUTPUT_REACHED        0x6915
+#define SW_SECURITY_TRUSTED_INPUT            0x6916
 
 #define SW_CLIENT_NOT_SUPPORTED              0x6930
 

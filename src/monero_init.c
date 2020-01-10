@@ -27,6 +27,15 @@ const unsigned char C_MAGIC[8] = {
  'N','E','R','V','A','.','H','W'
 };
 
+const unsigned char C_FAKE_SEC_VIEW_KEY[32] = {
+  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+};
+const unsigned char C_FAKE_SEC_SPEND_KEY[32] = {
+  0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,
+  0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF
+};
+
 /* ----------------------------------------------------------------------- */
 /* --- Boot                                                            --- */
 /* ----------------------------------------------------------------------- */
@@ -34,12 +43,16 @@ void monero_init() {
   os_memset(&G_monero_vstate, 0, sizeof(monero_v_state_t));
 
   //first init ?
-  if (os_memcmp(N_monero_pstate->magic, (void*)C_MAGIC, sizeof(C_MAGIC)) != 0) {
+  if (os_memcmp((void*)N_monero_pstate->magic, (void*)C_MAGIC, sizeof(C_MAGIC)) != 0) {
+    #ifdef USE_TESTNET
+    monero_install(TESTNET);
+    #else
     monero_install(MAINNET);
+    #endif
   }
 
   G_monero_vstate.protocol = 0xff;
-  //generate key protection
+
   //load key
   monero_init_private_key();
   //ux conf
@@ -47,6 +60,7 @@ void monero_init() {
   // Let's go!
   G_monero_vstate.state = STATE_IDLE;
 }
+
 
 /* ----------------------------------------------------------------------- */
 /* --- init private keys                                               --- */
@@ -65,7 +79,10 @@ void monero_init_private_key() {
   unsigned char seed[32];
   unsigned char chain[32];
 
-  // m/44'/14336'/0'/0/0
+  //generate account keys
+
+  // m / purpose' / coin_type' / account' / change / address_index
+  // m / 44'      / 128'       / 0'       / 0      / 0
   path[0] = 0x8000002C;
   path[1] = 0x80003800;
   path[2] = 0x80000000;
@@ -75,6 +92,7 @@ void monero_init_private_key() {
 
   switch(N_monero_pstate->key_mode) {
   case KEY_MODE_SEED:
+
     monero_keccak_F(seed,32,G_monero_vstate.b);
     monero_reduce(G_monero_vstate.b,G_monero_vstate.b);
     monero_keccak_F(G_monero_vstate.b,32,G_monero_vstate.a);
@@ -82,18 +100,22 @@ void monero_init_private_key() {
     break;
 
   case KEY_MODE_EXTERNAL:
-    os_memmove(G_monero_vstate.a,  N_monero_pstate->a, 32);
-    os_memmove(G_monero_vstate.b,  N_monero_pstate->b, 32);
+    os_memmove(G_monero_vstate.a,  (void*)N_monero_pstate->a, 32);
+    os_memmove(G_monero_vstate.b,  (void*)N_monero_pstate->b, 32);
     break;
 
   default :
     THROW(SW_SECURITY_LOAD_KEY);
     return;
   }
-  
+
   monero_ecmul_G(G_monero_vstate.A, G_monero_vstate.a);
   monero_ecmul_G(G_monero_vstate.B, G_monero_vstate.b);
+
+  //generate key protection
   monero_aes_derive(&G_monero_vstate.spk,chain,G_monero_vstate.a,G_monero_vstate.b);
+
+
   G_monero_vstate.key_set = 1;
 }
 
@@ -101,6 +123,13 @@ void monero_init_private_key() {
 /* ---  Set up ui/ux                                                   --- */
 /* ----------------------------------------------------------------------- */
 void monero_init_ux() {
+  #ifdef UI_NANO_X
+  monero_base58_public_key(G_monero_vstate.ux_wallet_public_address, G_monero_vstate.A,G_monero_vstate.B, 0, NULL);
+  os_memset(G_monero_vstate.ux_wallet_public_short_address, '.', sizeof(G_monero_vstate.ux_wallet_public_short_address));
+  os_memmove(G_monero_vstate.ux_wallet_public_short_address, G_monero_vstate.ux_wallet_public_address,5);
+  os_memmove(G_monero_vstate.ux_wallet_public_short_address+7, G_monero_vstate.ux_wallet_public_address+95-5,5);
+  G_monero_vstate.ux_wallet_public_short_address[12] = 0;
+  #endif
 }
 
 /* ----------------------------------------------------------------------- */
@@ -110,41 +139,44 @@ void monero_install(unsigned char netId) {
   unsigned char c;
 
   //full reset data
-  monero_nvm_write(N_monero_pstate, NULL, sizeof(monero_nv_state_t));
+  monero_nvm_write((void*)N_monero_pstate, NULL, sizeof(monero_nv_state_t));
 
   //set mode key
   c = KEY_MODE_SEED;
-  nvm_write(&N_monero_pstate->key_mode, &c, 1);
+  nvm_write((void*)&N_monero_pstate->key_mode, &c, 1);
 
   //set net id
-  monero_nvm_write(&N_monero_pstate->network_id, &netId, 1);
+  monero_nvm_write((void*)&N_monero_pstate->network_id, &netId, 1);
 
   //write magic
-  monero_nvm_write(N_monero_pstate->magic, (void*)C_MAGIC, sizeof(C_MAGIC));
+  monero_nvm_write((void*)N_monero_pstate->magic, (void*)C_MAGIC, sizeof(C_MAGIC));
 }
 
 /* ----------------------------------------------------------------------- */
 /* --- Reset                                                           --- */
 /* ----------------------------------------------------------------------- */
-#define MONERO_SUPPORTED_CLIENT_SIZE 5
+#define MONERO_SUPPORTED_CLIENT_SIZE 1
 const char * const monero_supported_client[MONERO_SUPPORTED_CLIENT_SIZE] = {
-  "0.1.6.5", "0.1.6.6", "0.1.6.7", "0.1.6.8", "0.1.6.9"
+  "0.1.7.0"
 };
 
 int monero_apdu_reset() {
 
   unsigned int client_version_len;
-  char client_version[10];
+  char client_version[16];
   client_version_len = G_monero_vstate.io_length - G_monero_vstate.io_offset;
-  if (client_version_len > 10) {
+  if (client_version_len > 14) {
     THROW(SW_CLIENT_NOT_SUPPORTED+1);
   }
   monero_io_fetch((unsigned char*)&client_version[0], client_version_len);
-
+  client_version[client_version_len] = '.';
+  client_version_len++;
+  client_version[client_version_len] = 0;
   unsigned int i = 0;
   while(i < MONERO_SUPPORTED_CLIENT_SIZE) {
-    if ((strlen((char*)PIC(monero_supported_client[i])) == client_version_len) &&
-        (os_memcmp((char*)PIC(monero_supported_client[i]), client_version, client_version_len)==0) ) {
+    unsigned int monero_supported_client_len = strlen((char*)PIC(monero_supported_client[i]));
+    if ((monero_supported_client_len <= client_version_len) &&
+        (os_memcmp((char*)PIC(monero_supported_client[i]), client_version, monero_supported_client_len)==0) ) {
       break;
     }
     i++;
