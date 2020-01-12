@@ -32,16 +32,9 @@
 /* ---                        NanoS  UI layout                         --- */
 /* ----------------------------------------------------------------------- */
 
-const ux_menu_entry_t ui_menu_reset[] ;
-void ui_menu_reset_action(unsigned int value);
-
-const ux_menu_entry_t ui_menu_settings[] ;
-
 const ux_menu_entry_t ui_menu_main[];
 void ui_menu_main_display(unsigned int value) ;
 const bagl_element_t* ui_menu_main_preprocessor(const ux_menu_entry_t* entry, bagl_element_t* element);
-
-void ui_menu_settings_display(unsigned int value);
 
 /* ------------------------------- Helpers  UX ------------------------------- */
 /*
@@ -63,13 +56,13 @@ void ui_info(const char* msg1, const char* msg2, const void *menu_display, unsig
 void ui_menu_amount_validation_action(unsigned int value);
 
 const ux_menu_entry_t ui_menu_fee_validation[] = {
-  {NULL,  NULL,                              1,      NULL, " Fee",     "?xnv?", 0, 0},
+  {NULL,  NULL,                              1,      NULL, " Fee",     "?xmr?", 0, 0},
   {NULL,  ui_menu_amount_validation_action,  REJECT, NULL,  "Reject",  "Fee",   0, 0},
   {NULL,  ui_menu_amount_validation_action,  ACCEPT, NULL,  "Accept",  "Fee",   0, 0},
   UX_MENU_END
 };
 const ux_menu_entry_t ui_menu_change_validation[] = {
-  {NULL,  NULL,                              1,      NULL, " Change",  "?xnv?",  0, 0},
+  {NULL,  NULL,                              1,      NULL, " Change",  "?xmr?",  0, 0},
   {NULL,  ui_menu_amount_validation_action,  REJECT, NULL,  "Reject",  "Change", 0, 0},
   {NULL,  ui_menu_amount_validation_action,  ACCEPT, NULL,  "Accept",  "Change", 0, 0},
   UX_MENU_END
@@ -153,13 +146,13 @@ void ui_menu_words_clear(unsigned int value) {
   ui_menu_main_display(0);
 }
 void ui_menu_words_back(unsigned int value) {
-  ui_menu_settings_display(1);
+  ui_menu_main_display(0);
 }
 /* ----------------------------- USER DEST/AMOUNT VALIDATION ----------------------------- */
 void ui_menu_validation_action(unsigned int value);
 
 const ux_menu_entry_t ui_menu_validation[] = {
-  {NULL,  NULL,                       1,      NULL, " Amount",       "?xnv?",      0, 0},
+  {NULL,  NULL,                       1,      NULL, " Amount",       "?xmr?",      0, 0},
   {NULL,  NULL,                       3,      NULL,  "Destination",  "?dest.1?",   0, 0},
   {NULL,  NULL,                       4,      NULL,  "?dest.2?",     "?dest.2?",   0, 0},
   {NULL,  NULL,                       5,      NULL,  "?dest.3?",     "?dest.3?",   0, 0},
@@ -264,36 +257,21 @@ unsigned int ui_export_viewkey_button(unsigned int button_mask, unsigned int but
 
 
 const bagl_element_t ui_export_viewkey[] = {
-  // type             userid    x    y    w    h    str   rad  fill              fg        bg     font_id                   icon_id
-  { {BAGL_RECTANGLE,  0x00,     0,   0, 128,  32,    0,    0,  BAGL_FILL,  0x000000, 0xFFFFFF,    0,                         0},
-    NULL,
-    0,
-    0, 0,
-    NULL, NULL, NULL},
+  // type            userid    x    y    w   h str rad  fill  fg        bg        font_id                                    icon_id
+  { {BAGL_RECTANGLE, 0x00,   0,  0, 128, 32, 0, 0, BAGL_FILL, 0x000000, 0xFFFFFF, 0,                                                              0},
+    NULL},
 
-  { {BAGL_ICON,       0x00,    3,   12,   7,   7,    0,    0,         0,   0xFFFFFF, 0x000000,    0,                          BAGL_GLYPH_ICON_CROSS  },
-    NULL,
-    0,
-    0, 0,
-    NULL, NULL, NULL },
+  { {BAGL_ICON,      0x00,   3, 12,   7,  7, 0, 0,         0, 0xFFFFFF, 0x000000, 0,                                         BAGL_GLYPH_ICON_CROSS },
+    NULL},
 
-  { {BAGL_ICON,       0x00,  117,   13,   8,   6,    0,    0,         0,   0xFFFFFF, 0x000000,    0,                          BAGL_GLYPH_ICON_CHECK  },
-     NULL,
-     0,
-     0, 0,
-     NULL, NULL, NULL },
+  { {BAGL_ICON,      0x00, 117, 13,   8,  6, 0, 0,         0, 0xFFFFFF, 0x000000, 0,                                         BAGL_GLYPH_ICON_CHECK },
+     NULL},
 
-  { {BAGL_LABELINE,   0x01,    0,   12, 128,  32,    0,    0,         0,   0xFFFFFF, 0x000000,    BAGL_FONT_OPEN_SANS_EXTRABOLD_11px|BAGL_FONT_ALIGNMENT_CENTER, 0  },
-    G_monero_vstate.ux_menu,
-    0,
-    0, 0,
-    NULL, NULL, NULL },
+  { {BAGL_LABELINE,  0x01,   0, 12, 128, 32, 0, 0,         0, 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_EXTRABOLD_11px|BAGL_FONT_ALIGNMENT_CENTER, 0 },
+    G_monero_vstate.ux_menu},
 
-  { {BAGL_LABELINE,   0x02,    0,   26, 128,  32,    0,    0,         0,   0xFFFFFF, 0x000000,    BAGL_FONT_OPEN_SANS_EXTRABOLD_11px|BAGL_FONT_ALIGNMENT_CENTER, 0  },
-    G_monero_vstate.ux_menu,
-    0,
-    0, 0,
-    NULL, NULL, NULL },
+  { {BAGL_LABELINE,  0x02,   0, 26, 128, 32, 0, 0,         0, 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_EXTRABOLD_11px|BAGL_FONT_ALIGNMENT_CENTER, 0 },
+    G_monero_vstate.ux_menu},
 
 };
 
@@ -342,76 +320,6 @@ unsigned int ui_export_viewkey_button(unsigned int button_mask, unsigned int but
   return 0;
 }
 
-/* -------------------------------- NETWORK UX --------------------------------- */
-void ui_menu_network_action(unsigned int value);
-const ux_menu_entry_t ui_menu_network[] = {
-  {NULL,   NULL,                   0,        NULL, "It will reset", "the application!", 0, 0},
-  {NULL,   ui_menu_main_display,   0,                                      &C_badge_back, "Abort",         NULL,          61, 40},
-  {NULL,   ui_menu_network_action, TESTNET,  NULL, "Test Network ",  NULL,          0, 0},
-  #ifndef USE_TESTNET
-  {NULL,   ui_menu_network_action, MAINNET,  NULL, "Main Network",  NULL,          0, 0},
-  #endif
-  UX_MENU_END
-};
-
-const bagl_element_t* ui_menu_network_preprocessor(const ux_menu_entry_t* entry, bagl_element_t* element) {
-  os_memset(G_monero_vstate.ux_menu, 0, sizeof(G_monero_vstate.ux_menu));
-  if ((entry == &ui_menu_network[2]) && (element->component.userid==0x20) && (N_monero_pstate->network_id == TESTNET)) {
-    os_memmove(G_monero_vstate.ux_menu, "Test Network  ", 14);
-    G_monero_vstate.ux_menu[13] = '+';
-    element->text = G_monero_vstate.ux_menu;
-  }
-  #ifndef USE_TESTNET
-  if ((entry == &ui_menu_network[3]) && (element->component.userid==0x20) && (N_monero_pstate->network_id == MAINNET)) {
-    os_memmove(G_monero_vstate.ux_menu, "Main Network  ", 14);
-    G_monero_vstate.ux_menu[13] = '+';
-    element->text = G_monero_vstate.ux_menu;
-  }
-  #endif
-  return element;
-}
-
-void ui_menu_network_action(unsigned int value) {
-  monero_install(value);
-  monero_init();
-  ui_menu_main_display(0);
-}
-
-void ui_menu_network_display(unsigned int value) {
-   UX_MENU_DISPLAY(value, ui_menu_network, ui_menu_network_preprocessor);
-}
-
-/* -------------------------------- RESET UX --------------------------------- */
-
-const ux_menu_entry_t ui_menu_reset[] = {
-  {NULL,   NULL,                 0, NULL,          "Really Reset ?", NULL, 0, 0},
-  {NULL,   ui_menu_main_display, 0, &C_badge_back, "No",         NULL, 61, 40},
-  {NULL,   ui_menu_reset_action, 0, NULL,          "Yes",           NULL, 0, 0},
-  UX_MENU_END
-};
-
-void ui_menu_reset_action(unsigned int value) {
-  unsigned char magic[4];
-  magic[0] = 0; magic[1] = 0; magic[2] = 0; magic[3] = 0;
-  monero_nvm_write(N_monero_pstate->magic, magic, 4);
-  monero_init();
-  ui_menu_main_display(0);
-}
-/* ------------------------------- SETTINGS UX ------------------------------- */
-
-const ux_menu_entry_t ui_menu_settings[] = {
-  {NULL,     ui_menu_network_display,     0, NULL,          "Change Network",  NULL, 0, 0},
-  {NULL,        ui_menu_words_display,    0, NULL,          "Show 25 words",   NULL, 0, 0},
-  {ui_menu_reset,               NULL,     0, NULL,          "Reset",           NULL, 0, 0},
-  {NULL,        ui_menu_main_display,     2, &C_badge_back, "Back",            NULL, 61, 40},
-  UX_MENU_END
-};
-
-
-void ui_menu_settings_display(unsigned int value) {
-   UX_MENU_DISPLAY(value, ui_menu_settings, NULL);
-}
-
 /* --------------------------------- INFO UX --------------------------------- */
 
 
@@ -419,7 +327,7 @@ void ui_menu_settings_display(unsigned int value) {
 #define XSTR(x) STR(x)
 
 const ux_menu_entry_t ui_menu_info[] = {
-  {NULL,  NULL,                 -1, NULL,          "Monero",                   NULL, 0, 0},
+  {NULL,  NULL,                 -1, NULL,          "Nerva",                   NULL, 0, 0},
   {NULL,  NULL,                 -1, NULL,          "Min Version",  NULL, 0, 0},
   {NULL,  NULL,                 -1, NULL,          "0."XSTR(MONERO_VERSION),  NULL, 0, 0},
   {NULL,  ui_menu_main_display,  3, &C_badge_back, "Back",                     NULL, 61, 40},
@@ -457,7 +365,7 @@ const bagl_element_t* ui_menu_pubaddr_preprocessor(const ux_menu_entry_t* entry,
       switch (G_monero_vstate.disp_addr_mode) {
       case 0:
       case DISP_MAIN:
-        os_memmove(G_monero_vstate.ux_menu, "Main", 4);
+        os_memmove(G_monero_vstate.ux_menu, "Primary", 7);
         break;
       case DISP_SUB:
         os_memmove(G_monero_vstate.ux_menu, "Sub", 3);
@@ -557,12 +465,12 @@ const bagl_element_t* ui_menu_pubaddr_preprocessor(const ux_menu_entry_t* entry,
        if (G_monero_vstate.disp_addr_mode== DISP_INTEGRATED) {
         os_memmove(G_monero_vstate.ux_menu, G_monero_vstate.ux_address+11*8, 11);
       } else {
-        os_memmove(G_monero_vstate.ux_menu, G_monero_vstate.ux_address+11*8, 7);
+        os_memmove(G_monero_vstate.ux_menu, G_monero_vstate.ux_address+11*8, 9);
       }
     }
     if(element->component.userid==0x22) {
       if (G_monero_vstate.disp_addr_mode== DISP_INTEGRATED) {
-        os_memmove(G_monero_vstate.ux_menu, G_monero_vstate.ux_address+11*9, 7);
+        os_memmove(G_monero_vstate.ux_menu, G_monero_vstate.ux_address+11*9, 10);
       }
     }
     element->text = G_monero_vstate.ux_menu;
@@ -591,8 +499,8 @@ void ui_menu_any_pubaddr_display(unsigned int value) {
 void ui_menu_pubaddr_display(unsigned int value) {
    monero_base58_public_key(G_monero_vstate.ux_address, G_monero_vstate.A, G_monero_vstate.B, 0, NULL);
    G_monero_vstate.disp_addr_mode = 0;
-  G_monero_vstate.disp_addr_M = 0;
-  G_monero_vstate.disp_addr_m = 0;
+   G_monero_vstate.disp_addr_M = 0;
+   G_monero_vstate.disp_addr_m = 0;
    UX_MENU_DISPLAY(value, ui_menu_pubaddr, ui_menu_pubaddr_preprocessor);
 }
 
@@ -600,8 +508,8 @@ void ui_menu_pubaddr_display(unsigned int value) {
 /* --------------------------------- MAIN UX --------------------------------- */
 
 const ux_menu_entry_t ui_menu_main[] = {
-  {NULL,    ui_menu_pubaddr_display,  0, NULL,              "XNV",            "", 0, 0},
-  {ui_menu_settings,           NULL,  0, NULL,              "Settings",    NULL, 0, 0},
+  {NULL,    ui_menu_pubaddr_display,  0, NULL,              "NERVA Wallet", NULL, 0, 0},
+  {NULL,      ui_menu_words_display,  0, NULL,              "Show Seed",    NULL, 0, 0},
   {ui_menu_info,               NULL,  0, NULL,              "About",       NULL, 0, 0},
   {NULL,              os_sched_exit,  0, &C_icon_dashboard, "Quit app" ,   NULL, 50, 29},
   UX_MENU_END
@@ -613,7 +521,7 @@ const bagl_element_t* ui_menu_main_preprocessor(const ux_menu_entry_t* entry, ba
       os_memset(G_monero_vstate.ux_menu, 0, sizeof(G_monero_vstate.ux_menu));
       monero_base58_public_key(G_monero_vstate.ux_menu, G_monero_vstate.A,G_monero_vstate.B, 0, NULL);
       os_memset(G_monero_vstate.ux_menu+5,'.',2);
-      os_memmove(G_monero_vstate.ux_menu+7, G_monero_vstate.ux_menu+95-5,5);
+      os_memmove(G_monero_vstate.ux_menu+7, G_monero_vstate.ux_menu+97-5,5);
       G_monero_vstate.ux_menu[12] = 0;
       element->text = G_monero_vstate.ux_menu;
     }

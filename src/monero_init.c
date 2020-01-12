@@ -44,11 +44,7 @@ void monero_init() {
 
   //first init ?
   if (os_memcmp((void*)N_monero_pstate->magic, (void*)C_MAGIC, sizeof(C_MAGIC)) != 0) {
-    #ifdef USE_TESTNET
-    monero_install(TESTNET);
-    #else
-    monero_install(MAINNET);
-    #endif
+    monero_install();
   }
 
   G_monero_vstate.protocol = 0xff;
@@ -82,7 +78,7 @@ void monero_init_private_key() {
   //generate account keys
 
   // m / purpose' / coin_type' / account' / change / address_index
-  // m / 44'      / 128'       / 0'       / 0      / 0
+  // m / 44'      / 14336'       / 0'       / 0      / 0
   path[0] = 0x8000002C;
   path[1] = 0x80003800;
   path[2] = 0x80000000;
@@ -123,19 +119,12 @@ void monero_init_private_key() {
 /* ---  Set up ui/ux                                                   --- */
 /* ----------------------------------------------------------------------- */
 void monero_init_ux() {
-  #ifdef UI_NANO_X
-  monero_base58_public_key(G_monero_vstate.ux_wallet_public_address, G_monero_vstate.A,G_monero_vstate.B, 0, NULL);
-  os_memset(G_monero_vstate.ux_wallet_public_short_address, '.', sizeof(G_monero_vstate.ux_wallet_public_short_address));
-  os_memmove(G_monero_vstate.ux_wallet_public_short_address, G_monero_vstate.ux_wallet_public_address,5);
-  os_memmove(G_monero_vstate.ux_wallet_public_short_address+7, G_monero_vstate.ux_wallet_public_address+95-5,5);
-  G_monero_vstate.ux_wallet_public_short_address[12] = 0;
-  #endif
 }
 
 /* ----------------------------------------------------------------------- */
 /* ---  Install/ReInstall Monero app                                   --- */
 /* ----------------------------------------------------------------------- */
-void monero_install(unsigned char netId) {
+void monero_install() {
   unsigned char c;
 
   //full reset data
@@ -144,9 +133,6 @@ void monero_install(unsigned char netId) {
   //set mode key
   c = KEY_MODE_SEED;
   nvm_write((void*)&N_monero_pstate->key_mode, &c, 1);
-
-  //set net id
-  monero_nvm_write((void*)&N_monero_pstate->network_id, &netId, 1);
 
   //write magic
   monero_nvm_write((void*)N_monero_pstate->magic, (void*)C_MAGIC, sizeof(C_MAGIC));
@@ -157,7 +143,7 @@ void monero_install(unsigned char netId) {
 /* ----------------------------------------------------------------------- */
 #define MONERO_SUPPORTED_CLIENT_SIZE 1
 const char * const monero_supported_client[MONERO_SUPPORTED_CLIENT_SIZE] = {
-  "0.1.7.0"
+  "0.1.7."
 };
 
 int monero_apdu_reset() {

@@ -1,7 +1,0 @@
-#!/bin/bash
-
-if [[ -z "$@" ]]; then
-  exec make
-else
-  exec bash -c "$@"
-fi

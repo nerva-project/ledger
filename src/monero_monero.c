@@ -17,17 +17,8 @@
 #include "monero_api.h"
 #include "monero_vars.h"
 
-#ifndef USE_TESTNET
-const unsigned char C_MAINNET_NETWORK_ID[] = {
-    0x12, 0x30, 0xF1, 0x71 , 0x61, 0x04 , 0x41, 0x61, 0x17, 0x31, 0x00, 0x82, 0x16, 0xA1, 0xA1, 0x12
-};
-#endif
-const unsigned char C_TESTNET_NETWORK_ID[] =  {
-    0x13 ,0x22, 0xF0, 0x55 , 0x42, 0x18 , 0x40, 0x33, 0x16, 0x88, 0x01, 0x92, 0xAA, 0xBC, 0xFF, 0x13
-};
-
-
 // Copyright (c) 2014-2017, The Monero Project
+// Copyright (c) 2018-2020, The NERVA Project
 //
 // All rights reserved.
 //
@@ -92,26 +83,25 @@ static void encode_block(const unsigned char* block, unsigned int  size,  char* 
     }
 }
 
-int monero_base58_public_key(char* str_b58, unsigned char *view, unsigned char *spend, unsigned char is_subbadress, unsigned char *paymanetID) {
+int monero_base58_public_key(char* str_b58, unsigned char *view, unsigned char *spend, unsigned char is_subbadress, unsigned char *paymentID) {
     unsigned char data[72+8];
     unsigned int offset;
     unsigned int prefix;
 
-    if (paymanetID) {
+    if (paymentID)
         prefix = CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX;
-    } else if (is_subbadress) {
+    else if (is_subbadress)
         prefix = CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX;
-    } else {
+    else
         prefix = CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX;
-    }
 
     offset = monero_encode_varint(data, prefix);
 
     os_memmove(data+offset,spend,32);
     os_memmove(data+offset+32,view,32);
     offset += 64;
-    if (paymanetID) {
-        os_memmove(data+offset, paymanetID, 8);
+    if (paymentID) {
+        os_memmove(data+offset, paymentID, 8);
         offset += 8;
     }
     monero_keccak_F(data, offset, G_monero_vstate.H);

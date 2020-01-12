@@ -19,21 +19,11 @@
 #include "monero_api.h"
 #include "monero_vars.h"
 
-#if defined(IODUMMYCRYPT)
-  #warning IODUMMYCRYPT activated
-#endif
-#if defined(IONOCRYPT)
-  #warning IONOCRYPT activated
-#endif
-
-
 /*
  * io_buff: contains current message part
  * io_off: offset in current message part
  * io_length: length of current message part
  */
-
-
 
 /* ----------------------------------------------------------------------- */
 /* MISC                                                                    */

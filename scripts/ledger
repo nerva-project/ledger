@@ -1,0 +1,99 @@
+#!/bin/bash
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"/include/env
+
+function clean()
+{
+    rm -rf ${INCLUDE_DIR}/appinfo ${ROOT_DIR}/obj ${ROOT_DIR}/bin ${ROOT_DIR}/debug ${ROOT_DIR}/dep ${ROOT_DIR}/src/glyphs.c ${ROOT_DIR}/src/glyphs.h
+}
+
+function install()
+{
+    build_docker
+    build_virtualenv
+}
+
+function uninstall()
+{
+    clean
+    rm -rf ${SCRIPT_DIR}/loader
+    docker rmi nerva/ledger-${SDK_VER}
+}
+
+function build()
+{
+    run_docker make
+
+    icon_hex="$(python3 -m ledgerblue.icon ${ROOT_DIR}/images/icon_nerva.gif hexbitmaponly)"
+
+    envram="$(cat ${ROOT_DIR}/debug/app.map | grep _envram_data | tr -s ' ' | cut -f2 -d ' ')"
+    nvram_data="$(cat ${ROOT_DIR}/debug/app.map | grep _nvram_data | tr -s ' ' | cut -f2 -d ' ')"
+
+    data_size=$((envram - nvram_data))
+
+    echo "export APP_SIZE=${data_size}" > ${INCLUDE_DIR}/appinfo
+    echo "export ICON_HEX=${icon_hex}" >> ${INCLUDE_DIR}/appinfo
+}
+
+function load()
+{
+    if [ ! -f "${INCLUDE_DIR}/appinfo" ]; then
+        echo "appinfo file is missing, build ledger app first"
+        exit 0
+    else
+        source ${INCLUDE_DIR}/appinfo
+    fi
+
+    python3 -m ledgerblue.loadApp               \
+        --targetId ${DEVICE_ID}                 \
+        --fileName ${ROOT_DIR}/bin/app.hex      \
+        --appName ${APP_NAME}                   \
+        --appVersion ${APP_VER}                 \
+        --dataSize ${APP_SIZE}                  \
+        --icon ${ICON_HEX}                      \
+        --appFlags 0x40                         \
+        --path "44'/14336'"                     \
+        --curve secp256k1                       \
+        --tlv
+}
+
+function unload()
+{ 
+    python3 -m ledgerblue.deleteApp             \
+        --targetId ${DEVICE_ID}                 \
+        --appName ${APP_NAME}
+}
+
+function check()
+{
+	python3 -m ledgerblue.checkGenuine          \
+        --targetId ${DEVICE_ID}
+}
+
+function env()
+{
+    run_docker "/bin/bash"
+}
+
+function seed()
+{
+	python3 -m ledgerblue.seedconv online
+}
+
+install
+
+if [ $# -eq 0 ]; then
+    echo "HELP"
+    echo "Usage: ./scripts/make <command>"
+    echo "Available commands"
+    echo "install   - Installs the build environment. Implicitly called on each run"
+    echo "uninstall - Deletes all build output and the build environment"
+    echo "build     - Builds the code"
+    echo "clean     - Deletes all build output"
+    echo "load      - loads the built app onto your ledger"
+    echo "unload    - removes the app from your ledger"
+    echo "check     - Checks if your ledger is real"
+    echo "env       - Starts a temporary docker container from the build image"
+    echo "seed      - Populates the ledger app with a Nerva compatible seed."
+else
+    $1
+fi

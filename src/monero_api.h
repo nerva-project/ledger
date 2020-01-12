@@ -18,7 +18,7 @@
 
 int monero_apdu_reset();
 
-void monero_install(unsigned char netId);
+void monero_install();
 void monero_init(void);
 void monero_init_private_key(void);
 void monero_wipe_private_key(void);

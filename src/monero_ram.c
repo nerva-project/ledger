@@ -22,21 +22,7 @@
 #include "os_io_seproxyhal.h"
 
 unsigned char G_io_seproxyhal_spi_buffer[IO_SEPROXYHAL_BUFFER_SIZE_B];
-
-#ifdef TARGET_NANOX
-/* --- NANO-X config --- */
-
-#include "ux.h"
-ux_state_t G_ux;
-bolos_ux_params_t G_ux_params;
-
-#else
-/* --- NANO-X config --- */
-
 ux_state_t ux;
-
-#endif
-
 
 monero_v_state_t  G_monero_vstate;
 

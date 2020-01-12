@@ -45,25 +45,14 @@
 #define CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX  0x7081
 #define CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX          0x1080
 
-enum network_type {
-  #ifndef USE_TESTNET
-  MAINNET = 0,
-  #endif
-  TESTNET = 1
-};
-
 struct monero_nv_state_s {
   /* magic */
   unsigned char magic[8];
-
-  /* network */
-  unsigned char network_id;
 
   /* key mode */
   #define KEY_MODE_EXTERNAL 0x21
   #define KEY_MODE_SEED     0x42
   unsigned char key_mode;
-
 
   /* spend key */
   unsigned char b[32];
@@ -164,18 +153,12 @@ struct monero_v_state_s {
   /* ------------------------------------------ */
   /* ---               UI/UX                --- */
   /* ------------------------------------------ */
-
-  #ifdef UI_NANO_X
-  char            ux_wallet_public_address[160];
-  char            ux_wallet_public_short_address[5+2+5+1];
-  #endif
-
   union {
     struct {
-      /* menu 0: 95-chars + "<monero: >"  + null */
-      char            ux_menu[112];
-      // address to display: 95/106-chars + null
-      char            ux_address[98];
+      /* menu 0: 97-chars + "<nerva: >"  + null */
+      char            ux_menu[132];
+      // address to display: 97/109-chars + null
+      char            ux_address[132];
       // xmr to display: max pow(2,64) unit, aka 20-chars + '0' + dot + null
       char            ux_amount[23];
       // addr mode
@@ -189,11 +172,6 @@ struct monero_v_state_s {
     struct {
       unsigned char tmp[340];
     };
-    #ifdef UI_NANO_X
-    struct {
-      char ux_words[520];
-    };
-    #endif
   };
 };
 typedef struct  monero_v_state_s monero_v_state_t;
