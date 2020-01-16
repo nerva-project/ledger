@@ -42,11 +42,13 @@ repeated""", action='append')
 	parser.add_argument("--appName", help="The name to give the application after loading it")
 	parser.add_argument("--signature", help="A signature of the application (hex encoded)")
 	parser.add_argument("--signApp", help="Sign application with provided signPrivateKey", action='store_true')
+	parser.add_argument("--verifyApp", help="Verify application with provided signature", action='store_true')
 	parser.add_argument("--appFlags", help="The application flags", type=auto_int)
 	parser.add_argument("--bootAddr", help="The application's boot address", type=auto_int)
 	parser.add_argument("--rootPrivateKey", help="""The Signer private key used to establish a Secure Channel (otherwise
 a random one will be generated)""")
 	parser.add_argument("--signPrivateKey", help="Set the private key used to sign the loaded app")
+	parser.add_argument("--signPublicKey", help="Set the public key used to verify the app signature")
 	parser.add_argument("--apdu", help="Display APDU log", action='store_true')
 	parser.add_argument("--deployLegacy", help="Use legacy deployment API", action='store_true')
 	parser.add_argument("--apilevel", help="Use given API level when interacting with the device", type=auto_int)
@@ -125,7 +127,6 @@ if __name__ == '__main__':
 	if args.rootPrivateKey == None:
 		privateKey = PrivateKey()
 		publicKey = binascii.hexlify(privateKey.pubkey.serialize(compressed=False))
-		print("Generated random root public key : %s" % publicKey)
 		args.rootPrivateKey = privateKey.serialize()
 
 	args.appName = string_to_bytes(args.appName)
@@ -295,16 +296,22 @@ if __name__ == '__main__':
 		appLength = printer.maxAddr() - printer.minAddr()
 		loader.createAppNoInstallParams(args.appFlags, appLength, args.appName, args.icon, path, None, None, string_to_bytes(args.appVersion))
 
-
 	hash = loader.load(0x0, 0xF0, printer, targetId=args.targetId, targetVersion=args.targetVersion, doCRC=not (args.nocrc or NOCRC)) 
 
-	print("Application full hash : " + hash)
-
-	if (signature == None and args.signApp):
-		masterPrivate = PrivateKey(bytes(bytearray.fromhex(args.signPrivateKey)))
-		signature = masterPrivate.ecdsa_serialize(masterPrivate.ecdsa_sign(bytes(binascii.unhexlify(hash)), raw=True))
-		print("Application signature: " + str(binascii.hexlify(signature)))
-
+	if (signature == None):
+		if (args.signApp):
+			priKey = PrivateKey(bytes(bytearray.fromhex(args.signPrivateKey)))
+			signature = priKey.ecdsa_serialize(priKey.ecdsa_sign(bytes(binascii.unhexlify(hash)), raw=True))
+			print(str(binascii.hexlify(signature)))
+	else:
+		if (args.verifyApp):
+			pubKey = PublicKey(bytes(bytearray.fromhex(args.signPublicKey)), raw=True)
+			signature = pubKey.ecdsa_deserialize(bytes(bytearray.fromhex(args.signature)))
+			if not pubKey.ecdsa_verify(bytes(binascii.unhexlify(hash)), signature, raw=True):
+				print("Signature not verified")
+			else:
+				print("Signature verified")
+	
 	if (args.tlv):
 		loader.commit(signature)
 	else:
