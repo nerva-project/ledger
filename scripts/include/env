@@ -4,87 +4,8 @@ export SCRIPT_DIR="$(cd "$(dirname "${INCLUDE_DIR}")" && pwd)"
 export ROOT_DIR="$(cd "$(dirname "${SCRIPT_DIR}")" && pwd)"
 
 export SDK_VER=og-1601
-#export SDK_VER=160
 export DEVICE_ID=0x31100004
+export BOOTLOADER_ID=0x01000001
 export APP_NAME=Nerva
 export APP_VER=1.7.0
-
-function build_virtualenv()
-{
-    if ! [ -d "${SCRIPT_DIR}/loader" ]; then
-        virtualenv -p python3 ${SCRIPT_DIR}/loader
-        source ${SCRIPT_DIR}/loader/bin/activate
-        pip3 install pycryptodomex ECPy readline hidapi protobuf future pillow python-u2flib-host websocket_client
-
-        pkgdir=$(python3 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
-
-        if [ ! -d "${pkgdir}" ]; then
-            echo "Could not determine site-packages folder. Most functionality will be unavailable"
-        else
-            cp -r ${ROOT_DIR}/external/loader/ledgerblue ${pkgdir}
-            cp -r ${ROOT_DIR}/tools/python/src/ledger/monero/dictionaries ${pkgdir}/ledgerblue
-            cp -r ${ROOT_DIR}/tools/python/src/ledger/monero/seedconv.py ${pkgdir}/ledgerblue/seedconv.py
-            cp ${ROOT_DIR}/external/sdk/icon.py ${pkgdir}/ledgerblue/icon.py
-        fi
-    else
-        source ${SCRIPT_DIR}/loader/bin/activate
-    fi
-}
-
-function download_tarballs()
-{
-    mkdir -p ${ROOT_DIR}/external/env
-
-    if [ ! -f "${ROOT_DIR}/external/env/gcc.tar.bz2" ]; then
-        curl -L https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q1-update/+download/gcc-arm-none-eabi-5_3-2016q1-20160330-linux.tar.bz2 \
-        --output ${ROOT_DIR}/external/env/gcc.tar.bz2
-    fi
-
-    if [ ! -d "${ROOT_DIR}/external/env/gcc-arm-none-eabi-5_3-2016q1" ]; then
-        echo "217850b0f3297014e8e52010aa52da0a83a073ddec4dc49b1a747458c5d6a223 ${ROOT_DIR}/external/env/gcc.tar.bz2" | sha256sum -c
-
-        if [ $? -ne 0 ]; then
-            echo "gcc.tar.bz2 is corrupt"
-            rm ${ROOT_DIR}/external/env/gcc.tar.bz2
-            exit 1
-        else
-            tar -xvf ${ROOT_DIR}/external/env/gcc.tar.bz2 -C ${ROOT_DIR}/external/env
-        fi
-    fi
-
-    if [ ! -f "${ROOT_DIR}/external/env/gcc.tar.bz2" ]; then
-        curl -L https://releases.llvm.org/4.0.0/clang+llvm-4.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz \
-        --output ${ROOT_DIR}/external/env/clang.tar.xz
-    fi
-
-    if [ ! -d "${ROOT_DIR}/external/env/clang-arm-fropi" ]; then
-        echo "8e920c166b00e7869cea443e305933cc410bd1b982c7c5dc56995b6cffb0586f ${ROOT_DIR}/external/env/clang.tar.xz" | sha256sum -c
-
-        if [ $? -ne 0 ]; then
-            echo "clang.tar.xz is corrupt"
-            rm ${ROOT_DIR}/external/env/clang.tar.xz
-            exit 1
-        else
-            tar -xvf ${ROOT_DIR}/external/env/clang.tar.xz -C ${ROOT_DIR}/external/env
-            mv ${ROOT_DIR}/external/env/clang+llvm-4.0.0-x86_64-linux-gnu-ubuntu-16.04 ${ROOT_DIR}/external/env/clang-arm-fropi
-        fi
-    fi
-}
-
-function build_docker()
-{
-    download_tarballs
-
-    if [ ! "$(docker images --format '{{.Repository}}:{{.Tag}}' | grep nerva/ledger-${SDK_VER})" ]; then
-        cd ${ROOT_DIR}/external/sdk
-        git checkout tags/nanos-${SDK_VER}
-        docker build --build-arg SDK_VER=${SDK_VER} -t nerva/ledger-${SDK_VER} - < ${ROOT_DIR}/Dockerfile
-    fi
-}
-
-function run_docker()
-{
-    action=$1
-    echo Running Action: "${action}"
-    docker run --rm -i --privileged -v ${ROOT_DIR}:/code -v ${ROOT_DIR}/external/sdk:/opt/bolos-sdk -v ${ROOT_DIR}/external/env:/opt/bolos-env --user 1000:1000 --name nerva_ledger -t nerva/ledger-${SDK_VER} /bin/bash -c "${action}"
-}
+export TARGET_VER=1.6.0
