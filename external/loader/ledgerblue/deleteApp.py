@@ -66,7 +66,6 @@ if __name__ == '__main__':
 	if args.rootPrivateKey == None:
 		privateKey = PrivateKey()
 		publicKey = binascii.hexlify(privateKey.pubkey.serialize(compressed=False))
-		print("Generated random root public key : %s" % publicKey)
 		args.rootPrivateKey = privateKey.serialize()
 
 	dongle = None
