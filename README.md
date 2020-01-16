@@ -13,13 +13,17 @@ This repo contains the Nerva Ledger App for Ledger Nano S.
 
 *NOTE: It is best to also download the latest ledger live app and make sure your device is visible and accessible in the ledger live app.*
 
-## Building the app
+## Installing a custom Certificate Authority (CA)
 
-`cd ./scripts`  
-`./ledger build`  
-`./ledger load` 
+TODO
 
-For a full list of available commands run the `ledger` script without arguments
+## Installing the pre-compiled app
+
+TODO
+
+## Building the app from source
+
+TODO
 
 ## Using the ledger with the Nerva CLI
 
@@ -60,5 +64,8 @@ Prior to Ubuntu 19.04, you need the following entries in `/etc/libccid_Info.plis
 ```
 
 Create the following udev rules `/etc/udev/rules.d/99-ledger.rules`  
-`SUBSYSTEMS=="usb", ATTRS{idVendor}=="2c97", ATTRS{idProduct}=="0000", MODE="0660", TAG+="uaccess", TAG+="udev-acl" GROUP="plugdev"`  
-`SUBSYSTEMS=="usb", ATTRS{idVendor}=="2c97", ATTRS{idProduct}=="0001", MODE="0660", TAG+="uaccess", TAG+="udev-acl" GROUP="plugdev"`  
+```
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="2c97", ATTRS{idProduct}=="0000", MODE="0660", TAG+="uaccess", TAG+="udev-acl" GROUP="plugdev"  
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="2c97", ATTRS{idProduct}=="0001", MODE="0660", TAG+="uaccess", TAG+="udev-acl" GROUP="plugdev"  
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="2c97", ATTRS{idProduct}=="0004", MODE="0660", TAG+="uaccess", TAG+="udev-acl" GROUP="plugdev"
+```
