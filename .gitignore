@@ -4,7 +4,7 @@ debug
 obj
 external/env
 scripts/loader
-scripts/include/key
+scripts/include/keys/pri
 scripts/include/appinfo
 __pycache__
 __init__.pyc
