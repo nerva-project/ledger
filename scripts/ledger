@@ -45,7 +45,6 @@ function load_app()
         --delete                                \
         --signApp                               \
         --signPrivateKey ${SIGN_PRI_KEY}
-        #--signature ${APPINFO_SIG}
 }
 
 function delete_app()
@@ -120,6 +119,7 @@ function build_app()
 function create_signing_key()
 {
     keypair=($(python3 -m ledgerblue.genCAPair))
+    mkdir -p ${INCLUDE_DIR}/keys
     echo "export SIGN_PUB_KEY=${keypair[0]}" > ${INCLUDE_DIR}/keys/pub
     echo "export SIGN_PRI_KEY=${keypair[1]}" > ${INCLUDE_DIR}/keys/pri
 }
@@ -168,7 +168,7 @@ function env_download_tarballs()
         fi
     fi
 
-    if [ ! -f "${ROOT_DIR}/external/env/gcc.tar.bz2" ]; then
+    if [ ! -f "${ROOT_DIR}/external/env/clang.tar.xz" ]; then
         curl -L https://releases.llvm.org/4.0.0/clang+llvm-4.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz \
         --output ${ROOT_DIR}/external/env/clang.tar.xz
     fi

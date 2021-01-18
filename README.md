@@ -23,7 +23,7 @@ TODO
 
 ## Building the app from source
 
-TODO
+run `./scripts/ledger build_app`
 
 ## Using the ledger with the Nerva CLI
 
